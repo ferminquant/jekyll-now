@@ -4,12 +4,8 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
-
-### More Information
-
-A place to include any other types of information that you'd like to include about yourself.
+My formal education includes a bachelor's degree in Computer Science Engineering and an MBA in Information Technology Management. Through work experience I learned about Data Warehouse and Data Modeling. In the last years I self-taught myself Machine Learning and used the knowledge in work projects. Most recently I am deepening my knowledge and experience of Artificial Intelligence (Deep Learning and Reinforcement Learning to be more specific).
 
 ### Contact me
 
-[email@domain.com](mailto:email@domain.com)
+[ferminquant@gmail.com](mailto:ferminquant@gmail.com)
