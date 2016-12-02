@@ -10,6 +10,9 @@ For now I am using this blog post as a way to save links to resources I have fou
 * Another AI class, two lessons on RL, [here](https://youtu.be/IXuHxkpO5E8) and [here](https://youtu.be/yNeSFbE1jdY)
 * [RL assignments of a class on AI, you can download and play with the code.](http://ai.berkeley.edu/reinforcement.html) 
 
+Videos about DeepMind
+* [The Future of AI](https://youtu.be/e0NuW1j9RPA)
+
 <!---
 ![_config.yml]({{ site.baseurl }}/images/config.png)
 
