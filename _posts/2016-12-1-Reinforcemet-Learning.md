@@ -7,6 +7,7 @@ For now I am using this blog post as a way to save links to resources I have fou
 
 * [Great for starters series of videos. The first time I started to understand how RL worked.](https://www.youtube.com/playlist?list=PLWi7UcbOD_0u1eUjmF59XW2TGHWdkHjnS)
 * [A complete course on RL. Seems good but most is too theoretical for my taste.](https://www.youtube.com/playlist?list=PL7-jPKtc4r78-wCZcQn5IqyuWhBZ8fOxT)
+* Another AI class, two lessons on RL, [here](https://youtu.be/IXuHxkpO5E8) and [here](https://youtu.be/yNeSFbE1jdY)
 * [RL assignments of a class on AI, you can download and play with the code.](http://ai.berkeley.edu/reinforcement.html) 
 
 <!---
