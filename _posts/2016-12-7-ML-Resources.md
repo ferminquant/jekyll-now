@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Machine Learning Article Summaries
+title: Summaries of Machine Learning Resources
 ---
 
 I thought it a good idea to have a place to reference all the material I have found, read and studied about Machine Learning, Deep Learning, Reinforcement Learning and Artificial Intelligence in general. I used to forget the deeper details and found myself re-reading articles, so I decided to make this post to easily find references in the future.
