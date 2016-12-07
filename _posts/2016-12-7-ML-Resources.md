@@ -21,7 +21,7 @@ So without further ado, here are my summaries:
 
 <!-- /MarkdownTOC -->
 
-# Introductions <a name="introductions"></a>
+# Introductions
 
 #### [What is holding you back from your machine learning goals?](http://machinelearningmastery.com/what-is-holding-you-back-from-your-machine-learning-goals/)
 
