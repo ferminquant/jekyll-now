@@ -17,6 +17,7 @@ So without further ado, here are my summaries:
   - [Convolutional Neural Networks](#convolutional-neural-networks)
     - [A Beginner's Guide To Understanding Convolutional Neural Networks](#a-beginners-guide-to-understanding-convolutional-neural-networks)
     - [Video: Deep Visualization Toolbox](#video-deep-visualization-toolbox)
+    - [A Beginner's Guide To Understanding Convolutional Neural Networks Part 2](#a-beginners-guide-to-understanding-convolutional-neural-networks-part-2)
 
 <!-- /MarkdownTOC -->
 
@@ -44,26 +45,9 @@ A very good post overall, and fulfills its goal of introducing CNNs to a technic
 
 #### [Video: Deep Visualization Toolbox](https://www.youtube.com/watch?v=AgkfIQ4IGaM)
 
-This is the video mentioned above. It is the best video I have found that literally shows in real-time how the neurons in a CNN activate with certain features, and how the deeper the layer, the broader part of the image that each neuron recognizes.
+This is the video mentioned [above](#a-beginners-guide-to-understanding-convolutional-neural-networks). It is the best video I have found that literally shows in real-time how the neurons in a CNN activate with certain features, and how the deeper the layer, the broader part of the image that each neuron recognizes.
 
 The first time I saw it was eye-opening, but after working more on convolution layers, I watched it again and found it to be more impressive than what I thought at first. Really recommended video to watch.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#### [A Beginner's Guide To Understanding Convolutional Neural Networks Part 2](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner's-Guide-To-Understanding-Convolutional-Neural-Networks-Part-2/)
 
