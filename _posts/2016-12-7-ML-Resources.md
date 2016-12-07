@@ -7,6 +7,16 @@ I thought it a good idea to have a place to reference all the material I have fo
 
 So without further ado, here are my summaries:
 
+Table of Contents
+=================
+
+      * [title: Summaries of Machine Learning Resources](#title-summaries-of-machine-learning-resources)
+   * [Introductions](#introductions)
+   * [Deep Learning](#deep-learning)
+      * [Convolutional Neural Networks](#convolutional-neural-networks)
+            * [<a href="https://www.youtube.com/watch?v=AgkfIQ4IGaM">Video: Deep Visualization Toolbox</a>](#video-deep-visualization-toolbox)
+
+
 # Introductions
 
 [What is holding you back from your machine learning goals?](http://machinelearningmastery.com/what-is-holding-you-back-from-your-machine-learning-goals/)
@@ -15,9 +25,9 @@ It is a short motivational post with the goal to get you immediately started wit
 
 I find it a nice post for starters, since when I began my quest in machine learning I took lot of courses and read lots of resources, but found myself not using or even needed more than half of it when I finally started working on real problems.
 
-## Deep Learning
+# Deep Learning
 
-### Convolutional Neural Networks
+## Convolutional Neural Networks
 
 [A Beginner's Guide To Understanding Convolutional Neural Networks](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner's-Guide-To-Understanding-Convolutional-Neural-Networks/)
 
