@@ -18,6 +18,7 @@ So without further ado, here are my summaries:
     - [A Beginner's Guide To Understanding Convolutional Neural Networks](#a-beginners-guide-to-understanding-convolutional-neural-networks)
     - [Video: Deep Visualization Toolbox](#video-deep-visualization-toolbox)
     - [A Beginner's Guide To Understanding Convolutional Neural Networks Part 2](#a-beginners-guide-to-understanding-convolutional-neural-networks-part-2)
+    - [The 9 Deep Learning Papers You Need To Know About \(Understanding CNNs Part 3\)](#the-9-deep-learning-papers-you-need-to-know-about-understanding-cnns-part-3)
 
 <!-- /MarkdownTOC -->
 
@@ -51,3 +52,8 @@ The first time I saw it was eye-opening, but after working more on convolution l
 
 #### [A Beginner's Guide To Understanding Convolutional Neural Networks Part 2](https://adeshpande3.github.io/adeshpande3.github.io/A-Beginner's-Guide-To-Understanding-Convolutional-Neural-Networks-Part-2/)
 
+This is the second post of the series stated [above](#a-beginners-guide-to-understanding-convolutional-neural-networks). Once again, still introductory but very well explained. Helped me understand stride and padding. Also briefly mentions the other types of layers in a CNN (ReLU and Pooling). Has a short paragraph on Dropout and Network in Network Layers, without going into details but linking to related papers. It ends with more links to research papers on object detection and segmentation.
+
+#### [The 9 Deep Learning Papers You Need To Know About (Understanding CNNs Part 3)](https://adeshpande3.github.io/adeshpande3.github.io/The-9-Deep-Learning-Papers-You-Need-To-Know-About.html)
+
+Final post of the series following the one [above](#a-beginners-guide-to-understanding-convolutional-neural-networks-part-2). The title says it all, it summarizes 9 important papers. They are well explained for being short summaries, and have links to the papers. Very important resource to start learning more about the field.
