@@ -9,7 +9,7 @@ So without further ado, here are my summaries:
 
 # Table of Contents
 
-<!-- MarkdownTOC autolink="true" bracket="round" depth="0" style="unordered" autoanchor="true" -->
+<!-- MarkdownTOC autolink="true" bracket="round" depth="0" autoanchor="true" -->
 
 - [Introductions](#introductions)
 		- [What is holding you back from your machine learning goals?](#what-is-holding-you-back-from-your-machine-learning-goals)
@@ -22,14 +22,14 @@ So without further ado, here are my summaries:
 <!-- /MarkdownTOC -->
 
 <a name="introductions"></a>
-# Introductions
+# Introductions <a name="introductions"></a>
 
 <a name="what-is-holding-you-back-from-your-machine-learning-goals"></a>
 #### [What is holding you back from your machine learning goals?](http://machinelearningmastery.com/what-is-holding-you-back-from-your-machine-learning-goals/)
 
 It is a short motivational post with the goal to get you immediately started with Machine Learning. It tells you why you should start even if you don't feel ready, and urges you to start with small projects, with links on how to do so. 
 
-I find it a nice post for starters, since when I began my quest in machine learning I took lot of courses and read lots of resources, but found myself not using or even needed more than half of it when I finally started working on real problems.
+I find it a nice post for starters, since when I began my quest in machine learning I took lot of courses and read lots of resources, but found myself not using or even needing more than half of it when I finally started working on real problems.
 
 <a name="deep-learning"></a>
 # Deep Learning
