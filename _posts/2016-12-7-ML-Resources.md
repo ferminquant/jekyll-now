@@ -10,7 +10,7 @@ So without further ado, here are my summaries:
 Table of Contents
 =================
 
-      * [title: Summaries of Machine Learning Resources](#title-summaries-of-machine-learning-resources)
+* [title: Summaries of Machine Learning Resources](#title-summaries-of-machine-learning-resources)
    * [Introductions](#introductions)
    * [Deep Learning](#deep-learning)
       * [Convolutional Neural Networks](#convolutional-neural-networks)
