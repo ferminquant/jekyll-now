@@ -3,9 +3,9 @@ layout: post
 title: Machine Learning Article Summaries
 ---
 
-For some time now I have been finding, reading and studying a lot of articles and videos about Machine Learning, Deep Learning, Reinforcement Learning and Artificial Intelligence in general. I found myself learning a lot from them, and connecting dots everywhere. After some time when trying to remember where I learned about a specific topic I found I didn't remember the deepest details, so I had to go through the ardous task of looking through all my bookmarks or even finding it again by googling it, and even after finding it most of the time I had to go through the whole article to remember the exact mindset I had at the time to find what I was looking for in the first place.
+I thought it a good idea to have a place to reference all the material I have found, read and studied about Machine Learning, Deep Learning, Reinforcement Learning and Artificial Intelligence in general. I used to forget the deeper details and found myself re-reading articles, so I decided to make this post to easily find references in the future.
 
-Because of this, I thought it a good idea to have a place to organize the links and what I learned from each, to be able to easily find reference material in the future. However, I found it to be a little overkill to write a summary blog post for each article I find, hence I am making one blog post for every article with a short summary of each. If it eventually grows too much I might need to branch it out, or not and just organize a super long post. So without further ado, here are my summaries:
+So without further ado, here are my summaries:
 
 #Introductions
 ####[What is holding you back from your machine learning goals?](http://machinelearningmastery.com/what-is-holding-you-back-from-your-machine-learning-goals/)
