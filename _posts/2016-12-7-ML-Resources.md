@@ -9,7 +9,7 @@ So without further ado, here are my summaries:
 
 # Table of Contents
 
-<!-- MarkdownTOC autolink="true" bracket="round" depth="0" autoanchor="false" -->
+<!-- MarkdownTOC autolink="true" bracket="round" depth="0" -->
 
 - [Introductions](#introductions)
 		- [What is holding you back from your machine learning goals?](#what-is-holding-you-back-from-your-machine-learning-goals)
