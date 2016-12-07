@@ -9,15 +9,15 @@ So without further ado, here are my summaries:
 
 # Table of Contents
 
-<!-- MarkdownTOC autolink="true" bracket="round" depth="0" -->
+<!-- MarkdownTOC autolink="false" bracket="round" depth="0" -->
 
-- [Introductions](#introductions)
-		- [What is holding you back from your machine learning goals?](#what-is-holding-you-back-from-your-machine-learning-goals)
-- [Deep Learning](#deep-learning)
-	- [Convolutional Neural Networks](#convolutional-neural-networks)
-		- [A Beginner's Guide To Understanding Convolutional Neural Networks](#a-beginners-guide-to-understanding-convolutional-neural-networks)
-		- [Video: Deep Visualization Toolbox](#video-deep-visualization-toolbox)
-		- [A Beginner's Guide To Understanding Convolutional Neural Networks Part 2](#a-beginners-guide-to-understanding-convolutional-neural-networks-part-2)
+- Introductions
+		- What is holding you back from your machine learning goals?
+- Deep Learning
+	- Convolutional Neural Networks
+		- A Beginner's Guide To Understanding Convolutional Neural Networks
+		- Video: Deep Visualization Toolbox
+		- A Beginner's Guide To Understanding Convolutional Neural Networks Part 2
 
 <!-- /MarkdownTOC -->
 
