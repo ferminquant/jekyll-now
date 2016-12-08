@@ -22,9 +22,9 @@ So without further ado, here are my summaries:
 - [Reinforcement Learning](#reinforcement-learning)
     - [Youtube Playlist: Reinforcement Learning by Jacob Schrum](#youtube-playlist-reinforcement-learning-by-jacob-schrum)
     - [Youtube Playlist: Reinforcement Learning by David Silver](#youtube-playlist-reinforcement-learning-by-david-silver)
-    - [Source Code: UC Berkeley CS188 Intro to AI -- Course Materials](#source-code-uc-berkeley-cs188-intro-to-ai----course-materials)
+    - [Source Code: UC Berkeley CS188 Intro to AI - Course Materials](#source-code-uc-berkeley-cs188-intro-to-ai---course-materials)
   - [Videos about DeepMind](#videos-about-deepmind)
-    - [The Future Of Artificial Intelligence || Demis Hassabis - DeepMind Founder](#the-future-of-artificial-intelligence-||-demis-hassabis---deepmind-founder)
+    - [The Future Of Artificial Intelligence by Demis Hassabis - DeepMind Founder](#the-future-of-artificial-intelligence-by-demis-hassabis---deepmind-founder)
 
 <!-- /MarkdownTOC -->
 
@@ -78,13 +78,13 @@ That said, I haven't properly gone through his whole class. I have only seen the
 
 Though, it might be that I am too new to the subject to properly appreciate its contents, which no doubt must have its significance. However, just like I learned the first real-world practical application of linear algebra 3 years after graduating from my bachelors, I'd much rather learn by doing, and a good start is the code below.
 
-#### [Source Code: UC Berkeley CS188 Intro to AI -- Course Materials](http://ai.berkeley.edu/reinforcement.html)
+#### [Source Code: UC Berkeley CS188 Intro to AI - Course Materials](http://ai.berkeley.edu/reinforcement.html)
 
 I found this code which I believe is the starter code for [this class](https://www.youtube.com/channel/UCB4_W1V-KfwpTLxH9jG1_iA/videos). Lectures [10](https://www.youtube.com/watch?v=IXuHxkpO5E8&t) and [11](https://www.youtube.com/watch?v=yNeSFbE1jdY&t) are specifically about RL. The videos, although long, are quite helpful, and playing with the code is a great learning experience. I had to make some strange changes to play around with a dynamic epsilon, but in the end was possible. 
 
 ## Videos about DeepMind
 
-#### [The Future Of Artificial Intelligence || Demis Hassabis - DeepMind Founder](https://www.youtube.com/watch?v=e0NuW1j9RPA&feature=youtu.be)
+#### [The Future Of Artificial Intelligence by Demis Hassabis - DeepMind Founder](https://www.youtube.com/watch?v=e0NuW1j9RPA&feature=youtu.be)
 
 I have found quite a few videos of Demis Hassabis explaining about their game playing RL algorithms. I found this one in particular quite interesting, as it goes into a little more detail about some "unthinkable" things AlphaGo did when defeating Lee Sedol, like putting a piece in the fifth row instead of the fourth or third like traditional play, how Lee Sedol got up from the game, the commentary in English that thought it was a mistake, and that ultimately AlphaGo won that match in part because of that move. It was also the first place I saw him mentioning that AlphaGo had in some way showed intuition and creativity, attributes normally given to humans. 
 
