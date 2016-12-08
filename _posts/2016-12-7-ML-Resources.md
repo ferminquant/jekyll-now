@@ -19,6 +19,12 @@ So without further ado, here are my summaries:
     - [Video: Deep Visualization Toolbox](#video-deep-visualization-toolbox)
     - [A Beginner's Guide To Understanding Convolutional Neural Networks Part 2](#a-beginners-guide-to-understanding-convolutional-neural-networks-part-2)
     - [The 9 Deep Learning Papers You Need To Know About \(Understanding CNNs Part 3\)](#the-9-deep-learning-papers-you-need-to-know-about-understanding-cnns-part-3)
+- [Reinforcement Learning](#reinforcement-learning)
+    - [Youtube Playlist: Reinforcement Learning by Jacob Schrum](#youtube-playlist-reinforcement-learning-by-jacob-schrum)
+    - [Youtube Playlist: Reinforcement Learning by David Silver](#youtube-playlist-reinforcement-learning-by-david-silver)
+    - [Source Code: UC Berkeley CS188 Intro to AI -- Course Materials](#source-code-uc-berkeley-cs188-intro-to-ai----course-materials)
+  - [Videos about DeepMind](#videos-about-deepmind)
+    - [The Future Of Artificial Intelligence || Demis Hassabis - DeepMind Founder](#the-future-of-artificial-intelligence-||-demis-hassabis---deepmind-founder)
 
 <!-- /MarkdownTOC -->
 
@@ -56,4 +62,30 @@ This is the second post of the series stated [above](#a-beginners-guide-to-under
 
 #### [The 9 Deep Learning Papers You Need To Know About (Understanding CNNs Part 3)](https://adeshpande3.github.io/adeshpande3.github.io/The-9-Deep-Learning-Papers-You-Need-To-Know-About.html)
 
-Final post of the series following the one [above](#a-beginners-guide-to-understanding-convolutional-neural-networks-part-2). The title says it all, it summarizes 9 important papers. They are well explained for being short summaries, and have links to the papers. Very important resource to start learning more about the field.
+Final post of the series following the one [above](#a-beginners-guide-to-understanding-convolutional-neural-networks-part-2). The title says it all, it summarizes 9 important papers. They are well explained for being short summaries, and have links to the papers. Very important resource to start learning more about the field. It basically shows an evolution of using deep learning for computer vision, the one I found the most fascinating was about Generative Adversarial Networks.
+
+# Reinforcement Learning
+
+#### [Youtube Playlist: Reinforcement Learning by Jacob Schrum](https://www.youtube.com/playlist?list=PLWi7UcbOD_0u1eUjmF59XW2TGHWdkHjnS)
+
+After finding out that one of the technologies DeepMind used for their Atari playing implementation was Reinforcment Learning, I started looking for resources to understand what it was, and also how and why it worked. I found a lot of resources, none of which gave you such a good grasp as this video playlist. It is really introductory, but extremely clear to understand, and the most important points are properly covered.
+
+#### [Youtube Playlist: Reinforcement Learning by David Silver](https://www.youtube.com/playlist?list=PL7-jPKtc4r78-wCZcQn5IqyuWhBZ8fOxT)
+
+Weeks after watching these videos I came to find out that David Silver works for Google DeepMind, and according to his [public LinkedIn Profile](https://www.linkedin.com/in/david-silver) he is as of this writing working in self-driving cars, which is nonetheless totally awesome. 
+
+That said, I haven't properly gone through his whole class. I have only seen the first 2 and last 3 videos. I found them a little boring like any other class that involves theory, so I just skipped through most of it. I know because of comments in many places, a lot of people idolize his class, and as stated in the first paragraph, I think the work he's done is great, but personally I didn't like his videos much. 
+
+Though, it might be that I am too new to the subject to properly appreciate its contents, which no doubt must have its significance. However, just like I learned the first real-world practical application of linear algebra 3 years after graduating from my bachelors, I'd much rather learn by doing, and a good start is the code below.
+
+#### [Source Code: UC Berkeley CS188 Intro to AI -- Course Materials](http://ai.berkeley.edu/reinforcement.html)
+
+I found this code which I believe is the starter code for [this class](https://www.youtube.com/channel/UCB4_W1V-KfwpTLxH9jG1_iA/videos). Lectures [10](https://www.youtube.com/watch?v=IXuHxkpO5E8&t) and [11](https://www.youtube.com/watch?v=yNeSFbE1jdY&t) are specifically about RL. The videos, although long, are quite helpful, and playing with the code is a great learning experience. I had to make some strange changes to play around with a dynamic epsilon, but in the end was possible. 
+
+## Videos about DeepMind
+
+#### [The Future Of Artificial Intelligence || Demis Hassabis - DeepMind Founder](https://www.youtube.com/watch?v=e0NuW1j9RPA&feature=youtu.be)
+
+I have found quite a few videos of Demis Hassabis explaining about their game playing RL algorithms. I found this one in particular quite interesting, as it goes into a little more detail about some "unthinkable" things AlphaGo did when defeating Lee Sedol, like putting a piece in the fifth row instead of the fourth or third like traditional play, how Lee Sedol got up from the game, the commentary in English that thought it was a mistake, and that ultimately AlphaGo won that match in part because of that move. It was also the first place I saw him mentioning that AlphaGo had in some way showed intuition and creativity, attributes normally given to humans. 
+
+Near the end around the 41 minute mark, it shows a graphic of how this same algorithm when put in charge of Google's data center greatly optimizes the power consumption, seemingly by around 40%. A little later, shows their results of WaveNet on speech quality and piano music. Overall, a very interesting video.
