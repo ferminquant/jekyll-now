@@ -13,6 +13,10 @@ So without further ado, here are my summaries:
 
 - [Introductions](#introductions)
     - [What is holding you back from your machine learning goals?](#what-is-holding-you-back-from-your-machine-learning-goals)
+    - [Programmers Can Get Into Machine Learning](#programmers-can-get-into-machine-learning)
+    - [Why becoming a data scientist might be easier than you think](#why-becoming-a-data-scientist-might-be-easier-than-you-think)
+- [Data Science Techniques](#data-science-techniques)
+    - [Forget your fancy data science, try overkill analytics](#forget-your-fancy-data-science-try-overkill-analytics)
 - [Deep Learning](#deep-learning)
   - [Convolutional Neural Networks](#convolutional-neural-networks)
     - [A Beginner's Guide To Understanding Convolutional Neural Networks](#a-beginners-guide-to-understanding-convolutional-neural-networks)
@@ -38,6 +42,20 @@ So without further ado, here are my summaries:
 It is a short motivational post with the goal to get you immediately started with Machine Learning. It tells you why you should start even if you don't feel ready, and urges you to start with small projects, with links on how to do so. 
 
 I find it a nice post for starters, since when I began my quest in machine learning I took lot of courses and read lots of resources, but found myself not using or even needing more than half of it when I finally started working on real problems.
+
+#### [Programmers Can Get Into Machine Learning](http://machinelearningmastery.com/programmers-can-get-into-machine-learning/)
+
+It makes a very valid point, with a clear example of a web designer wanting to learn to program. When I started in machine learning, I could already program, and when I sought for advice in the Internet, it happened just what he states, I got advice for intermediate level data scientists. The advice is simple, start using machine learning before you start learning all the deep material about it. You can expect a lot of mistakes, but you will learn more and faster from them than from reading ans studying all the math behind it (that step is for when you reach intermediate level).
+
+#### [Why becoming a data scientist might be easier than you think](https://gigaom.com/2012/10/14/why-becoming-a-data-scientist-might-be-easier-than-you-think/)
+
+An interesting read, where it explains how new data scientists who have been successful at Kaggle competitions have quickly risen without lengthy and formal education. 
+
+# Data Science Techniques
+
+#### [Forget your fancy data science, try overkill analytics](https://gigaom.com/2012/09/21/forget-your-fancy-data-science-try-overkill-analytics/)
+
+A fast read about how a Kaggle competition winner used simple algorithms to win, an average of generalized linear regression and random forest. He uses the term overkill analytics as using computing power as the main source from which to get great results, instead of complicating the problem with a bunch of overengineering. His philosophy makes some sense, but in [his explanation of how he won](http://www.overkillanalytics.net/kaggles-wordpress-challenge-the-like-graph/) he admits to doing some previous work to make it computationally feasible. It is interesting to know he could win like that, it reminds me of [ensemble learning](https://en.wikipedia.org/wiki/Ensemble_learning), where multiple predictions are combined to get a better one.
 
 # Deep Learning
 
