@@ -15,6 +15,7 @@ So without further ado, here are my summaries:
     - [What is holding you back from your machine learning goals?](#what-is-holding-you-back-from-your-machine-learning-goals)
     - [Programmers Can Get Into Machine Learning](#programmers-can-get-into-machine-learning)
     - [Why becoming a data scientist might be easier than you think](#why-becoming-a-data-scientist-might-be-easier-than-you-think)
+    - [Why Get Into Machine Learning?](#why-get-into-machine-learning)
 - [Data Science Techniques](#data-science-techniques)
     - [Forget your fancy data science, try overkill analytics](#forget-your-fancy-data-science-try-overkill-analytics)
 - [Deep Learning](#deep-learning)
@@ -50,6 +51,10 @@ It makes a very valid point, with a clear example of a web designer wanting to l
 #### [Why becoming a data scientist might be easier than you think](https://gigaom.com/2012/10/14/why-becoming-a-data-scientist-might-be-easier-than-you-think/)
 
 An interesting read, where it explains how new data scientists who have been successful at Kaggle competitions have quickly risen without lengthy and formal education. 
+
+#### [Why Get Into Machine Learning?](http://machinelearningmastery.com/why-get-into-machine-learning/)
+
+It has a strange matrix at the end, which I did not understand on its own before reading the whole post. However, after reading the post it makes sense. I identify more with the practitioner row of the matrix, and it gives suggested resources in which to begin your learning of machine learning.
 
 # Data Science Techniques
 
