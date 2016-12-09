@@ -26,7 +26,7 @@ So without further ado, here are my summaries:
   - [DeepMind](#deepmind)
     - [Video: The Future Of Artificial Intelligence by Demis Hassabis - DeepMind Founder](#video-the-future-of-artificial-intelligence-by-demis-hassabis---deepmind-founder)
     - [Video: Demis Hassabis, CEO, DeepMind Technologies - The Theory of Everything](#video-demis-hassabis-ceo-deepmind-technologies---the-theory-of-everything)
-    - [Demis Hassabis, Google DeepMind - Artificial Intelligence and the Future](#demis-hassabis-google-deepmind---artificial-intelligence-and-the-future)
+    - [Video: Demis Hassabis, Google DeepMind - Artificial Intelligence and the Future](#video-demis-hassabis-google-deepmind---artificial-intelligence-and-the-future)
     - [Video: Inside DeepMind](#video-inside-deepmind)
 
 <!-- /MarkdownTOC -->
@@ -101,7 +101,7 @@ The DeepMind mission is 1. Solve Intelligence and 2. Use it to solve everything 
 
 Later he gives a quick overview of how they made the Atari gaming, with examples of a few games. His dream is to make possible AI scientists or AI-assisted science. He concludes that the conference is called the theory of everything, because he believes that in order to find it, we might need to solve intelligence first.
 
-#### [Demis Hassabis, Google DeepMind - Artificial Intelligence and the Future](https://www.youtube.com/watch?v=f71RwCksAmI)
+#### [Video: Demis Hassabis, Google DeepMind - Artificial Intelligence and the Future](https://www.youtube.com/watch?v=f71RwCksAmI)
 
 I think this is by far the most interesting video about AlphaGo. It is a conference in Korea, and it seems to have been in the middle of the matches with Lee Sedol, since at 40:47 he states that he wishes Lee Sedol the best luck in the next 3 games (they played 5 in total). He states that AlphaGo is around 10% of what they do in DeepMind. During the first half it is basically the same presentation of his other videos, a summary of the Atari games, but shows a little more games. He starts with AlphaGo at around 21:50.
 
