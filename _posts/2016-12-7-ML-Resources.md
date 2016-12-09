@@ -5,20 +5,21 @@ title: Summaries of Machine Learning Resources
 
 I thought it a good idea to have a place to reference all the material I have found, read and studied about Machine Learning, Deep Learning, Reinforcement Learning and Artificial Intelligence in general. I used to forget the deeper details and found myself re-reading articles, so I decided to make this post to easily find references in the future.
 
+At first, I started with the ones I remembered had been the most useful. Then I started adding every one I read as per my original purpose, but it didn't work out, because I found myself not completely reading them but skimming through most. Also, not all were really useful for the future, so I removed the ones without any relevant content for my future reference.
+
 So without further ado, here are my summaries:
 
 # Table of Contents
 
 <!-- MarkdownTOC autolink="true" bracket="round" depth="0" style="unordered" indent="  " autoanchor="false" -->
 
-- [Introductions](#introductions)
-    - [What is holding you back from your machine learning goals?](#what-is-holding-you-back-from-your-machine-learning-goals)
-    - [Programmers Can Get Into Machine Learning](#programmers-can-get-into-machine-learning)
+- [Start with Machine Learning](#start-with-machine-learning)
     - [Why becoming a data scientist might be easier than you think](#why-becoming-a-data-scientist-might-be-easier-than-you-think)
     - [Why Get Into Machine Learning?](#why-get-into-machine-learning)
 - [Data Science Techniques](#data-science-techniques)
     - [Forget your fancy data science, try overkill analytics](#forget-your-fancy-data-science-try-overkill-analytics)
 - [Deep Learning](#deep-learning)
+    - [Youtube Playlist: Deep Learning SIMPLIFIED](#youtube-playlist-deep-learning-simplified)
   - [Convolutional Neural Networks](#convolutional-neural-networks)
     - [A Beginner's Guide To Understanding Convolutional Neural Networks](#a-beginners-guide-to-understanding-convolutional-neural-networks)
     - [Video: Deep Visualization Toolbox](#video-deep-visualization-toolbox)
@@ -36,17 +37,7 @@ So without further ado, here are my summaries:
 
 <!-- /MarkdownTOC -->
 
-# Introductions
-
-#### [What is holding you back from your machine learning goals?](http://machinelearningmastery.com/what-is-holding-you-back-from-your-machine-learning-goals/)
-
-It is a short motivational post with the goal to get you immediately started with Machine Learning. It tells you why you should start even if you don't feel ready, and urges you to start with small projects, with links on how to do so. 
-
-I find it a nice post for starters, since when I began my quest in machine learning I took lot of courses and read lots of resources, but found myself not using or even needing more than half of it when I finally started working on real problems.
-
-#### [Programmers Can Get Into Machine Learning](http://machinelearningmastery.com/programmers-can-get-into-machine-learning/)
-
-It makes a very valid point, with a clear example of a web designer wanting to learn to program. When I started in machine learning, I could already program, and when I sought for advice in the Internet, it happened just what he states, I got advice for intermediate level data scientists. The advice is simple, start using machine learning before you start learning all the deep material about it. You can expect a lot of mistakes, but you will learn more and faster from them than from reading ans studying all the math behind it (that step is for when you reach intermediate level).
+# Start with Machine Learning
 
 #### [Why becoming a data scientist might be easier than you think](https://gigaom.com/2012/10/14/why-becoming-a-data-scientist-might-be-easier-than-you-think/)
 
@@ -63,6 +54,10 @@ It has a strange matrix at the end, which I did not understand on its own before
 A fast read about how a Kaggle competition winner used simple algorithms to win, an average of generalized linear regression and random forest. He uses the term overkill analytics as using computing power as the main source from which to get great results, instead of complicating the problem with a bunch of overengineering. His philosophy makes some sense, but in [his explanation of how he won](http://www.overkillanalytics.net/kaggles-wordpress-challenge-the-like-graph/) he admits to doing some previous work to make it computationally feasible. It is interesting to know he could win like that, it reminds me of [ensemble learning](https://en.wikipedia.org/wiki/Ensemble_learning), where multiple predictions are combined to get a better one.
 
 # Deep Learning
+
+#### [Youtube Playlist: Deep Learning SIMPLIFIED](https://www.youtube.com/playlist?list=PLjJh1vlSEYgvGod9wWiydumYl8hOXixNu)
+
+An excellent series of videos explaining the concepts of deep learning at a high level. It does not go much into details, which is why it is great. It works more on the intuition, to get you to understand what deep learning does. Here I found out about the different algorithms, the differences between normal neural networks, different libraries and their features. It is really worth in general, but even more so when you are beginning in deep learning.
 
 ## Convolutional Neural Networks
 
