@@ -43,12 +43,14 @@ q:before, q:after {
 	content: none;
 }
 table, td {
-   border-spacing: 2px;
+   border-collapse: separate;
+   border-spacing: 1px;   
    border: 1px solid black;
    font-size: 80%;
 }
 th {
-   border-spacing: 2px;
+   border-collapse: separate;
+   border-spacing: 1px;   
    border: 1px solid black;
    font-size: 100%;
 }
