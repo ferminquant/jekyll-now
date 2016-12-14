@@ -43,6 +43,7 @@ q:before, q:after {
 	content: none;
 }
 table, td {
+   border-spacing: 2px;
    border: 1px solid black;
    font-size: 80%;
 }
