@@ -20,6 +20,7 @@ So without further ado, here are my summaries:
     - [Forget your fancy data science, try overkill analytics](#forget-your-fancy-data-science-try-overkill-analytics)
 - [Deep Learning](#deep-learning)
     - [Youtube Playlist: Deep Learning SIMPLIFIED](#youtube-playlist-deep-learning-simplified)
+    - [My Top 9 Favorite Python Deep Learning Libraries](#my-top-9-favorite-python-deep-learning-libraries)
   - [Convolutional Neural Networks](#convolutional-neural-networks)
     - [A Beginner's Guide To Understanding Convolutional Neural Networks](#a-beginners-guide-to-understanding-convolutional-neural-networks)
     - [Video: Deep Visualization Toolbox](#video-deep-visualization-toolbox)
@@ -58,6 +59,10 @@ A fast read about how a Kaggle competition winner used simple algorithms to win,
 #### [Youtube Playlist: Deep Learning SIMPLIFIED](https://www.youtube.com/playlist?list=PLjJh1vlSEYgvGod9wWiydumYl8hOXixNu)
 
 An excellent series of videos explaining the concepts of deep learning at a high level. It does not go much into details, which is why it is great. It works more on the intuition, to get you to understand what deep learning does. Here I found out about the different algorithms, the differences between normal neural networks, different libraries and their features. It is really worth in general, but even more so when you are beginning in deep learning.
+
+#### [My Top 9 Favorite Python Deep Learning Libraries](http://www.pyimagesearch.com/2016/06/27/my-top-9-favorite-python-deep-learning-libraries/)
+
+Seems to be a useful blog post about deep learning tools recommended for use. He recommends Keras the most, but writes a small summary of quite a few.
 
 ## Convolutional Neural Networks
 
