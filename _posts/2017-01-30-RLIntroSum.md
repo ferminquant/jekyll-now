@@ -1,0 +1,688 @@
+---
+layout: post
+title: Tuz
+---
+
+In this post I use different classification algorithms, using the training data from [Kaggle](https://www.kaggle.com/c/titanic/data). The data is small, and you can't get more, so the full difference between algorithms probably won't be noticed. I put up the whole code on my [Github](https://github.com/ferminquant/TitanicSurvival).
+
+<!-- MarkdownTOC autolink="true" bracket="round" depth="0" style="unordered" indent="  " autoanchor="false" -->
+
+- [Linear Model](#linear-model)
+- [Generalized Linear Model](#generalized-linear-model)
+- [Neural Networks](#neural-networks)
+  - [R package: neuralnet](#r-package-neuralnet)
+  - [H2O library in R](#h2o-library-in-r)
+    - [Hyperparameter Optimization with H2O](#hyperparameter-optimization-with-h2o)
+- [Random Forests](#random-forests)
+
+<!-- /MarkdownTOC -->
+
+# Linear Model
+
+The first algorithm used is a simple linear model, for which I used the lm function from R.
+
+```r 
+set.seed(1320)
+data = read.csv("train.csv", header = TRUE)
+data$Age = ifelse(is.na(data$Age), -1, data$Age)
+formula = Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked
+```
+
+As a first step I loaded the data, replaced all NA ages with -1, and decided on ignoring the following columns:
+
+- PassengerId: it is a unique identifier for each passenger, I found no way for it to be helpful for predicting survival.
+- Name: same as with PassengerId.
+- Ticket: again, same as the two above.
+- Cabin: might have been useful, but 77% of the data is empty, and some passengers have many cabins. If it had a more complete data set, and something in the Cabin name, like the preceding letter indicated something useful (like the position in the ship), I would have not ignored it.
+
+The ones I did include are:
+
+- Pclass: the passenger class, because first class might have been in a more "escapable" position, or would have been given priority.
+- Sex: usually on such emergencies, the call is to save women and children first, data will tell us if it held true this time.
+- Age: as with sex, younger women and children are given priority.
+- SibSp: if they had siblings or a spouse onboard, as in someone to help them.
+- Parch: parents or children, again someone to help you survive, or as a parent sacrifice yourself for your children, could be possibilities.
+- Fare: how much they paid for their ticket, rich people usually get priority in our unfair society, although in emergencies it might not hold true.
+- Embarked: where they embarked, it could hold more information about their background.
+
+```r
+for(j in 1:100){
+}
+```
+I repeat the code 100 times and get an average, just as an extra measure to prevent overfitting.
+
+```r
+  data = data[sample(NROW(data)),]
+```
+At the start of each cycle, I shuffle the data randomly.
+  
+```r
+  n_folds = 10
+  folds = cut(seq(1,NROW(data)),breaks=n_folds,labels=FALSE)
+  
+  for(i in 1:n_folds){
+  }
+```
+Then I start a 10 fold cross validation, again to avoid overfitting.
+
+```r
+    indexes = which(folds==i,arr.ind=TRUE)
+    test_data = data[indexes, ]
+    train_data = data[-indexes, ]
+    
+    model = lm(formula, train_data)
+```
+Separate train data from test data. For each cross validation iteration 9 parts to train data and 1 part to test data.
+Then, train the linear model with the lm function.
+
+```r    
+    # for cases when test data has values not in train data
+    source("missingLevelsToNA.R")
+    test_data = missingLevelsToNA(model,test_data)
+```
+This code is to prevent the next line from failing. I believe this should be done automatically in the predict function, but the coder who made the R function thought differently. What happens is that the Embarked column has only two values for "" or empty string. If those two values happen to stay in the test data, then the model does not know them, and can't evaluate them, and fails. In my opinion, it should just throw a warning. I got the code to replace the values not in the training data with NA in the test data from [here](http://stackoverflow.com/questions/4285214/predict-lm-with-an-unknown-factor-level-in-test-data).
+
+```r    
+    test_data$prediction = predict(model, test_data)
+```
+Code to predict data from the test data using the resulting model. The results are created as a new column in the test data called prediction, which is a real number between 0 and 1, indicating the probability of surviving or not.
+
+```r    
+    threshold = 0.5
+    test_data$result = ifelse(test_data$Survived == 0 & test_data$prediction <  threshold, 'TN', 
+                              ifelse(test_data$Survived == 0 & test_data$prediction >= threshold, 'FP', 
+                                     ifelse(test_data$Survived == 1 & test_data$prediction >= threshold, 'TP', 'FN')))
+    
+    tmp = table(test_data$result)
+    
+    if(is.na(tmp['FN'])){FN = 0} else {FN = tmp['FN']}
+    if(is.na(tmp['FP'])){FP = 0} else {FP = tmp['FP']}
+    if(is.na(tmp['TN'])){TN = 0} else {TN = tmp['TN']}
+    if(is.na(tmp['TP'])){TP = 0} else {TP = tmp['TP']}
+```
+I decided on the simplest threshold of 0.5, meaning if the prediction is at least 0.5 then it is predicting it survived. Then I evaluate the confusion matrix, taking each value into a variable for future calculations:
+
+- TN: True Negative, didn't survive and predicted to not survive.
+- FP: False Positive, didn't survive and predicted to survive.
+- TP: True Positive, survived and predicted to survive.
+- FN: False Negative, survived and predicted to not survive.
+    
+```r    
+    accuracy[i] = as.numeric((TN+TP)/sum(tmp))
+    error[i] = as.numeric((FN+FP)/sum(tmp))
+    precision[i] = as.numeric(TP/(TP+FP))
+    recall[i] = as.numeric(TP/(TP+FN))
+    specificity[i] = as.numeric(TN/(TN+FP))
+    fscore[i] = 2*((precision[i]*recall[i])/(precision[i]+recall[i]))
+    false_positive_rate[i] = as.numeric(FP/(TN+FP))
+```
+Now, using the metrics from before, I evaluate other metrics to get a better idea of the model performance:
+
+- Accuracy: percentage of correct predictions from the test data.
+- Error: percentage of incorrect predictions from the test data.
+- Precision: of those predicted to survive, how many really survived.
+- Recall: of those who survived, how many were predicted to survive.
+- Specificity: of those who did not survived, how many were predicted to not survive.
+- F1 Score: it gives you an idea of the accuracy. For more information read [this](https://en.wikipedia.org/wiki/F1_score).
+- False Positive Rate: of those who did not survive, how many were predicted to survive.
+
+After running the code in my "titanic_lm.R" file, these were my results:
+
+| Model        | **Accuracy** | Error  | Precision | Recall | Specificity | F1 Score | FP Rate |
+|:------------:|:------------:|:------:|:---------:|:------:|:-----------:|:--------:|:-------:|
+| Linear Model | **78.16%**   | 21.84% | 73.27%    | 67.95% | 84.56%      | 70.20%   | 15.44%  |
+
+For comparison between models, I will concentrate on the simple measure of accuracy. The trade-off between precision and recall, and the other metrics are more specific to the business problem you solve with these classification algorithms, which do not have much relevance here. They are good for reference, but no need to deeply analyze them here.
+
+# Generalized Linear Model
+
+The second algorithm is just a slight variation, the Generalized Linear Model, for which I used the glm function in R with a binomial distribution. All the code is the same as above, except where we train the model and predict the test values, which now is as follows:
+
+```r
+    model = glm(formula, family = binomial(link='logit'), train_data)
+    
+    test_data$prediction = predict(model, newdata=test_data, type='response')
+```
+
+After running the code in my "titanic_glm.R" file, these were my results:
+
+| Model        | **Accuracy** | Error  | Precision | Recall | Specificity | F1 Score | FP Rate |
+|:------------:|:------------:|:------:|:---------:|:------:|:-----------:|:--------:|:-------:|
+| Linear Model | **78.16%**   | 21.84% | 73.27%    | 67.95% | 84.56%      | 70.20%   | 15.44%  |
+| GLM          | **78.69%**   | 21.31% | 73.50%    | 69.66% | 84.36%      | 71.22%   | 15.64%  |
+
+Overall, it didn't really improve much, I would even consider them to have the same performance, not that I expected much difference between lm and glm.
+
+# Neural Networks
+
+The third algorithm is neural networks. 
+
+## R package: neuralnet
+
+As a start, I used the neuralnet package in R:
+
+```r
+library(neuralnet)
+```
+
+From what I have read in a lot of places which I do not remember, it is recommended to have one hidden layer with at least the same amount of nodes as input nodes, and up to 4 times the input nodes. Since I am experimenting, I will ignore that advice, and try a lot of different configurations. Hopefully, something interesting comes out.
+
+Since neural networks take much more time than lm or glm to train, I removed the 100 cycle loop, and will only do a regular 10 fold cross validation. For the neuralnet package, you need to ready the data to feed it into the neural network, as in transform the categorical variables into numerical values, which is done like this:
+
+```r
+data = model.matrix(~ Survived + Pclass + Sex + Age + SibSp + Parch + Fare + Embarked, data)
+```
+
+You also need to scale the values, so that all columns have values between 0 and 1. I achieved it like this:
+```r
+maxs = apply(data, 2, max)
+mins = apply(data, 2, min)
+data = as.data.frame(scale(data, center = mins, scale = maxs - mins))
+```
+
+Then I train the neural network. For a start I will try with one hidden layer with only one node, the lamest configuration I could think of.
+
+```r
+  model = neuralnet( 
+    Survived ~ Pclass + Sexmale + Age + SibSp + Parch + Fare + EmbarkedC + EmbarkedQ + EmbarkedS, 
+    data=train_data, hidden=c(1), threshold=0.05, stepmax=1e+07, lifesign='full',
+    lifesign.step = 25000, rep=1, linear.output=FALSE
+  )
+```
+A small explanation of the parameters I chose:
+
+- hidden: this is a list indicating the layers and amount of nodes in each layer. For two layers with 3 nodes each you would input c(3,3). Since this is the first example, I just chose one layer with one node.
+- threshold: this is the stopping criteria of the error function. The value 0.01 is the default value set by neuralnet. I chose 0.05 expecting accuracy to not suffer much, and avoid performance issues with my laptop CPU.
+- stepmax: the maximum number of steps to train the network for it to converge. The default is 1e+05, which should be enough, I just felt like increasing it.
+- lifesign: just a flag to show or not the progress of the training. Full chooses to show progress every x amount of steps, defined in the next parameter.
+- lifesign.step: the amount of steps to wait to show an update to the training process, when lifesign "full" is chosen.
+- rep: 1 is the default. It is the amount of times the network is trained. If greater than, at the end it chooses the best result. 
+- linear.output: I chose FALSE since it is a classification problem, TRUE is for regression.
+
+After training, there is no need to set missing values to NA like in lm and glm above, so that code was omitted. Now the prediction over the test data.
+
+```r
+  test_data$prediction = compute(model,test_data[,3:11])$net.result
+```
+
+The rest of the code for the confusion matrix and the other calculations is the same.
+After running the code in my "titanic_nn.R" file, these were my results:
+
+| Model        | **Accuracy** | Error  | Precision | Recall | Specificity | F1 Score | FP Rate | Time |
+|:------------:|:------------:|:------:|:---------:|:------:|:-----------:|:--------:|:-------:|:----:|
+| Linear Model | **78.16%**   | 21.84% | 73.27%    | 67.95% | 84.56%      | 70.20%   | 15.44%  | <1s  |
+| GLM          | **78.69%**   | 21.31% | 73.50%    | 69.66% | 84.36%      | 71.22%   | 15.64%  | <1s  |
+| NN(1)        | **79.91%**   | 20.09% | 83.45%    | 60.05% | 92.41%      | 69.29%   |  7.59%  | <1s  |
+
+It got a little better than glm, however it seems to be a little more biased into correctly predicting those who did not survive, as the specificity is specially higher. Also, precision is higher, but recall got lower, so it seems it is more conservative on predicting survival, and the F1 Score is lower. 
+
+In any case, this was the lamest neural network configuration I could think of, it has one node in one hidden layer, and it still outperformed lm and glm, seems interesting. I added a column to see how much time it took to train each cross validation iteration on my CPU, just for reference.
+
+Now I will test a lot of configurations in the hidden layer, to see if they make a difference.
+
+| Model        | **Accuracy** | Error  | Precision | Recall | Specificity | F1 Score | FP Rate | Time |
+|:------------:|:------------:|:------:|:---------:|:------:|:-----------:|:--------:|:-------:|:----:|
+| Linear Model | **78.16%**   | 21.84% | 73.27%    | 67.95% | 84.56%      | 70.20%   | 15.44%  | <1s  |
+| GLM          | **78.69%**   | 21.31% | 73.50%    | 69.66% | 84.36%      | 71.22%   | 15.64%  | <1s  |
+| NN(1)        | **79.91%**   | 20.09% | 83.45%    | 60.05% | 92.41%      | 69.29%   |  7.59%  | <1s  |
+| NN(2)        | **79.34%**   | 20.66% | 82.74%    | 59.33% | 91.77%      | 68.46%   |  8.23%  | <1s  |
+| NN(3)        | **80.46%**   | 19.54% | 84.18%    | 61.16% | 92.61%      | 70.23%   |  7.39%  | <1s  |
+| NN(4)        | **79.90%**   | 20.10% | 79.57%    | 64.79% | 89.47%      | 71.02%   | 10.53%  | ~1s  |
+| NN(5)        | **81.03%**   | 18.97% | 81.63%    | 65.17% | 90.97%      | 72.07%   |  9.03%  | ~2s  |
+| NN(6)        | **80.46%**   | 19.54% | 78.56%    | 67.55% | 88.09%      | 72.38%   | 11.91%  | ~2s  |
+| NN(7)        | **81.47%**   | 18.53% | 81.39%    | 67.40% | 90.04%      | 73.39%   |  9.96%  | ~2s  |
+| NN(8)        | **80.46%**   | 19.54% | 78.24%    | 69.14% | 87.40%      | 72.82%   | 12.60%  | ~4s  |
+| NN(9)        | **80.92%**   | 19.08% | 80.14%    | 67.21% | 89.33%      | 72.67%   | 10.67%  | ~5s  |
+| NN(10)       | **80.13%**   | 19.87% | 77.81%    | 68.36% | 87.39%      | 72.06%   | 12.61%  | ~7s  |
+| NN(20)       | **81.02%**   | 18.98% | 77.49%    | 71.49% | 86.97%      | 73.89%   | 13.03%  | ~12s |
+| NN(30)       | **78.89%**   | 21.11% | 74.57%    | 68.83% | 85.12%      | 71.09%   | 14.88%  | ~20s |
+| NN(40)       | **79.23%**   | 20.77% | 75.68%    | 68.04% | 86.28%      | 71.08%   | 13.72%  | ~30s |
+| NN(50)       | **80.35%**   | 19.65% | 76.03%    | 71.56% | 86.25%      | 73.25%   | 13.75%  | ~40s |
+| NN(60)       | **78.55%**   | 21.45% | 74.79%    | 67.08% | 85.74%      | 70.10%   | 14.26%  | ~2m  |
+| NN(70)       | **78.56%**   | 21.44% | 73.58%    | 69.70% | 84.23%      | 70.98%   | 15.77%  | ~2m  |
+| NN(80)       | **74.62%**   | 25.38% | 69.51%    | 75.44% | 74.86%      | 70.43%   | 25.14%  | ~1m  |
+| NN(90)       | **79.57%**   | 20.43% | 75.55%    | 69.67% | 85.76%      | 71.87%   | 14.24%  | ~1m  |
+| NN(100)      | **78.66%**   | 21.34% | 74.37%    | 68.13% | 85.37%      | 70.63%   | 14.63%  | ~1m  |
+
+It seems from the results above that the recommendations gave a good results. Not much difference is seen, but the best results considering all metrics, seem to be with 20 neurons, 2x the amount of inputs, it has one of the highest accuracies in the 81% range, and has the highest F1 Score. 
+
+Here is the image of the last model with 100 hidden neurons, just for fun's sake:
+
+![100 hidden neurons]({{ site.baseurl }}/images/100-neuron-nn.png)
+
+To finish this part of experimentation with neural networks, I am going to trim the other results before continuing. 
+Now to test multiple layers!
+
+| Model        | **Accuracy** | Error  | Precision | Recall | Specificity | F1 Score | FP Rate | Time |
+|:------------:|:------------:|:------:|:---------:|:------:|:-----------:|:--------:|:-------:|:----:|
+| Linear Model | **78.16%**   | 21.84% | 73.27%    | 67.95% | 84.56%      | 70.20%   | 15.44%  | <1s  |
+| GLM          | **78.69%**   | 21.31% | 73.50%    | 69.66% | 84.36%      | 71.22%   | 15.64%  | <1s  |
+| NN(20)       | **81.02%**   | 18.98% | 77.49%    | 71.49% | 86.97%      | 73.89%   | 13.03%  | ~12s |
+| NN(10,10)    | **76.87%**   | 23.13% | 71.53%    | 67.48% | 82.94%      | 68.79%   | 17.06%  | ~5m  |
+| NN(20,20)    | **78.00%**   | 22.00% | 71.39%    | 70.54% | 82.70%      | 70.66%   | 17.30%  | ~5m  |
+| NN(30,30)    | **77.89%**   | 22.11% | 71.41%    | 69.80% | 82.89%      | 70.08%   | 17.11%  | ~5m  |
+| NN(40,40)    | **77.54%**   | 22.46% | 70.60%    | 70.66% | 81.72%      | 70.31%   | 18.28%  | ~5m  |
+| NN(50,50)    | **61.81%**   | 38.19% | NaN       | 64.35% | 62.22%      | NaN      | 37.78%  | ~3m  |
+| NN(20,10)    | **77.32%**   | 22.68% | 71.53%    | 68.56% | 82.99%      | 69.45%   | 17.01%  | ~15m |
+| NN(20,40)    | **76.09%**   | 23.91% | 68.40%    | 69.23% | 80.36%      | 68.34%   | 19.64%  | ~7m  |
+| NN(20,60)    | **73.84%**   | 26.16% | NaN       | 62.08% | 83.39%      | NaN      | 16.61%  | ~7m  |
+| NN(20,80)    | **61.28%**   | 38.72% | NaN       | 46.59% | 72.25%      | NaN      | 27.75%  | ~5m  |
+| NN(100,100)  | **45.88%**   | 54.12% | NaN       | 80.00% | 20.00%      | NaN      | 80.00%  | <1s  |
+| NN(20,20,20) | **76.54%**   | 23.46% | 69.04%    | 69.86% | 80.62%      | 69.01%   | 19.38%  | ~20m |
+
+Trying more than one layer actually made the prediction much worse and inconsistent. All models with more than one hidden layer are worse than lm and glm, the worse being 2 layers of 100 neurons each, which oddly enough trained in under 1 second but got a measly 45% accuracy. Reading about these first neural networks, I found everywhere recommendations about only using one layer, and seeing no benefit to multiple layers; until now I hadn't taken the time to see if they were right, but after these results I believe them a little more. I would like to try other libraries, to avoid completely trusting the results of just one library. Hence, the results table up to now will be as follows:
+
+| Model         | **Accuracy** | Error  | Precision | Recall | Specificity | F1 Score | FP Rate | Time |
+|:-------------:|:------------:|:------:|:---------:|:------:|:-----------:|:--------:|:-------:|:----:|
+| Linear Model  | **78.16%**   | 21.84% | 73.27%    | 67.95% | 84.56%      | 70.20%   | 15.44%  | <1s  |
+| GLM           | **78.69%**   | 21.31% | 73.50%    | 69.66% | 84.36%      | 71.22%   | 15.64%  | <1s  |
+| neuralnet(20) | **81.02%**   | 18.98% | 77.49%    | 71.49% | 86.97%      | 73.89%   | 13.03%  | ~12s |
+
+## H2O library in R
+
+To continue testing with more neural networks, after some research I decided to test with [H2O for R](http://h2o-release.s3.amazonaws.com/h2o/rel-turing/10/index.html). I used R because it has been the language I have used so far, but according to H2O's [website](http://www.h2o.ai/h2o/) it can also be used in Python, Java, Scala, JSON and an API, and can also be used in [Spark](http://www.h2o.ai/sparkling-water/).
+
+```r
+library(h2o)
+library(parallel)
+#localH2O = h2o.init(nthreads=detectCores()-1)
+```
+To start, I reference the h2o library after installing it as per [their instructions](http://h2o-release.s3.amazonaws.com/h2o/rel-turing/10/index.html). The parallel library is to be able to use the function detectCores, which is used in the starting of the H2O instance, leaving one of your cores free to avoid the OS from hanging. My CPU only has 2 cores, so it was overkill though.
+
+```r
+set.seed(1320)
+data = read.csv("train.csv", header = TRUE)
+data$Age = ifelse(is.na(data$Age), -1, data$Age)
+data = data[sample(NROW(data)),]
+
+hdata = as.h2o(data)
+hdata$Survived = as.factor(hdata$Survived)
+hdata = hdata[-c(1,4,9,11)]
+```
+As before, I read the data in R, assign -1 to the empty ages, and shuffle ir randomly. Then I transfer the data into an H2O data frame, assign the Survived column as a factor so that H2O understands it is classification, and remove the unwanted columns of PassengerID, Name, Ticket and Cabin.
+
+```r
+hdata_split = h2o.splitFrame(hdata, ratios = c(0.1))
+hdata_test = hdata_split[[1]]
+hdata_train = hdata_split[[2]]
+```
+Here is where I changed the approach in comparison with before. I split the data into training data and test data, even though this was already the training data according to Kaggle, and they have their own test data. I did not split it into 10 data sets for cross validation, because H2O handles in on its own although a little differently.
+
+According to their [documentation](http://docs.h2o.ai/h2o/latest-stable/h2o-docs/cross-validation.html) their algorithms have a parameter of how many folds to use cross validation for. But it works in the following way:
+
+- If you assign, for example, 10 folds, it grabs the training data, gets 20% for internal testing, and separates the other 80% into 10 parts. 
+- It trains each part, and tests on the internal test set.
+- Trains on the hole training set, and this is the model returned.
+- If provided with a test set, which I did, predicts also on the test set.
+
+So, since the cross validation is included, you get three results or three confusion matrices, or three sets of the variables we have been comparing thus far. To keep things simple, I will only continue comparing the accuracy, althought H2O provides a full summary of all those variables and even more details like the AUC for training and testing, and the training steps and variable importance, which you can check by running the code on your own.
+
+```r
+nn = h2o.deeplearning(x = 2:8, y = 1, training_frame = hdata_train, 
+                      validation_frame = hdata_test,
+                      nfolds = 10,
+                      hidden = c(1),
+                      standardize = TRUE,
+                      activation = 'Tanh',
+                      epochs = 100,
+                      seed = 1320,
+                      shuffle_training_data = TRUE,
+                      variable_importances = TRUE)
+```
+Following a short explanation of the parameters I chose, although in their [docs](http://docs.h2o.ai/h2o/latest-stable/h2o-docs/data-science/deep-learning.html) they have way more options.
+
+- x: the column indexes of the data which are for training, so you exclude the result, the Survived column
+- y: the result column, Survived
+- training_frame: the data frame used for training
+- validation_frame: the data frame used for testing, this is optional, but if provided it predicts on its own after the training is done.
+- nfolds: the number of folds for cross validation, could be ignored to not do cross validation.
+- hidden: the layers and the amount of neurons in each, the default is two layers of 200 neuron each. 
+- standardize: this is by default TRUE, it scales the variables, which we had to do on our own before.
+- activation: I chose Tanh since it is one of the first ones used in neural networks, other options are available.
+- epochs: the number of epochs, the default is 10, but found a good balance in time and model performance was 100. 
+- seed: just a number I chose to keep results reproducible
+- shuffle_training_data: by default is disabled, it shuffles your training data
+- variable_importance: also disabled by default, it gives the list of variables ordered on importance for prediction after the model is trained. I enabled it just for reference.
+
+Notice I didn't transform categorial variables into numbers as in the previous examples. This is done by default, and you can change its behavior with the parameter categorical_encoding. I left it default since it is the same behavior as we did before, to have one column per level. Again, more details on their [docs](http://docs.h2o.ai/h2o/latest-stable/h2o-docs/data-science/deep-learning.html).
+
+```r
+summary(nn)
+```
+This gives you a big output of statistics of your training data, test data, cross validation data with each of the folds detailed, scoring history and variable importance. Basically most of what you would be interested of knowing about the resulting model.
+
+```r
+h2o.shutdown(FALSE)
+```
+Just shutdown the H2O instance at the end.
+
+Here are the results of the test I made with neural networks in H2O:
+
+
+| No | Model        | Training Accuracy | Test Accuracy | CV Accuracy | Time |
+|:--:|:------------:|:-----------------:|:-------------:|:-----------:|:----:|
+| 1  | H2O.NN(1)    | 83.00%            | 72.53%        | 82.00%      | ~2s  |
+| 2  | H2O.NN(2)    | 82.63%            | 70.33%        | 81.38%      | ~3s  |
+| 3  | H2O.NN(3)    | 78.00%            | 71.43%        | 79.25%      | ~4s  |
+| 4  | H2O.NN(4)    | 81.13%            | 79.12%        | 81.63%      | ~4s  |
+| 5  | H2O.NN(5)    | 81.38%            | 76.92%        | 77.38%      | ~4s  |
+| 6  | H2O.NN(6)    | 83.13%            | 79.12%        | 81.13%      | ~5s  |
+| 7  | H2O.NN(7)    | 83.75%            | 80.22%        | 80.88%      | ~5s  |
+| 8  | H2O.NN(8)    | 82.13%            | 78.02%        | 81.63%      | ~6s  |
+| 9  | H2O.NN(9)    | 84.00%            | 75.82%        | 82.38%      | ~6s  |
+| 10 | H2O.NN(10)   | 83.00%            | 80.22%        | 81.38%      | ~6s  |
+| 11 | H2O.NN(20)   | 83.88%            | 79.12%        | 81.13%      | ~10s |
+| 12 | H2O.NN(30)   | 83.38%            | 79.12%        | 82.75%      | ~15s |
+| 13 | H2O.NN(40)   | 83.00%            | 80.22%        | 82.13%      | ~20s |
+| 14 | H2O.NN(50)   | 82.88%            | 76.92%        | 83.00%      | ~30s |
+| 15 | H2O.NN(60)   | 83.00%            | 81.32%        | 82.50%      | ~30s |
+| 16 | H2O.NN(70)   | 83.63%            | 81.32%        | 80.38%      | ~1m  |
+| 17 | H2O.NN(80)   | 84.38%            | 80.22%        | 81.63%      | ~1m  |
+| 18 | H2O.NN(90)   | 83.88%            | 80.22%        | 82.25%      | ~1m  |
+| 19 | H2O.NN(100)  | 84.75%            | 81.32%        | 80.50%      | ~1m  |
+| 20 | H2O.NN(150)  | 83.25%            | 81.32%        | 81.00%      | ~2m  |
+| 21 | H2O.NN(200)  | 83.25%            | 80.22%        | 82.25%      | ~3m  |
+| 22 | H2O.NN(300)  | 83.38%            | 79.12%        | 81.00%      | ~3m  |
+| 23 | H2O.NN(400)  | 82.88%            | 78.02%        | 81.00%      | ~4m  |
+| 24 | H2O.NN(500)  | 84.50%            | 80.22%        | 79.63%      | ~5m  |
+| 25 | H2O.NN(1000) | 83.88%            | 74.73%        | 82.38%      | ~7m  |
+
+These were some interesting results, different from the neuralnet library. The accuracy I keep track of is the Test Accuracy, as it is the unseen examples of the models, and the real predictions.
+
+![H2O NN Chart]({{ site.baseurl }}/images/h2o_nn_acc.png)
+
+In the chart and table above, we can see that the model kept improving up to around 100 neurons, but got worse after 200, and at 1000 fell a lot more. The best performing model according to Test Accuracy are models 15 (60 neurons), 16 (70 neurons), 19 (100 neurons) and 20 (150 neurons) tied at 81.32%. So, as a way to untie them, the next most important prediction would be the cross validation accuracy, making the 60 neuron model the best one.
+
+| Model        | Training Accuracy | Test Accuracy | CV Accuracy | Time |
+|:------------:|:-----------------:|:-------------:|:-----------:|:----:|
+| H2O.NN(60)   | 83.00%            | 81.32%        | 82.50%      | ~30s |
+
+Now, to try multiple layers:
+
+| No | Model             | Training Accuracy | Test Accuracy | CV Accuracy | Time |
+|:--:|:-----------------:|:-----------------:|:-------------:|:-----------:|:----:|
+| 1  | H2O.NN(10,10)     | 82.13%            | 78.02%        | 80.00%      | ~11s |
+| 2  | H2O.NN(20,20)     | 84.63%            | 80.22%        | 81.13%      | ~25s |
+| 3  | H2O.NN(30,30)     | 85.88%            | 80.22%        | 81.25%      | ~45s |
+| 4  | H2O.NN(40,40)     | 85.13%            | 79.12%        | 81.88%      | ~1m  |
+| 5  | H2O.NN(50,50)     | 84.88%            | 79.12%        | 80.25%      | ~2m  |
+| 6  | H2O.NN(60,60)     | 86.83%            | 80.22%        | 80.75%      | ~2m  |
+| 7  | H2O.NN(70,70)     | 86.88%            | 81.32%        | 81.63%      | ~3m  |
+| 8  | H2O.NN(80,80)     | 86.88%            | 79.12%        | 81.63%      | ~4m  |
+| 9  | H2O.NN(90,90)     | 85.50%            | 80.22%        | 81.50%      | ~5m  |
+| 10 | H2O.NN(100,100)   | 87.00%            | 82.42%        | 79.88%      | ~6m  |
+| 11 | H2O.NN(150,150)   | 88.50%            | 82.42%        | 79.25%      | ~16m |
+| 12 | H2O.NN(200,200)   | 87.63%            | 79.12%        | 82.38%      | ~22m |
+| 13 | H2O.NN(500,500)   | 86.88%            | 78.02%        | 80.63%      | ~2h  |
+| 14 | H2O.NN(1000,1000) | 82.38%            | 76.92%        | 80.13%      | ~16h |
+| 15 | H2O.NN(100X3)     | 90.13%            | 83.52%        | 79.38%      | ~9m  |
+| 16 | H2O.NN(100X4)     | 89.75%            | 79.12%        | 81.88%      | ~19m |
+| 17 | H2O.NN(100X5)     | 87.75%            | 81.32%        | 81.00%      | ~27m |
+
+![H2O NN Multiple Layers Chart]({{ site.baseurl }}/images/h2o_nn2_acc.png)
+
+We can see from the results that the H2O library does work consistently with multiple layers. However, not much improvement is seen, only a little for two layers of 100 or 150 neurons, where test accuracy is 82.42%, which is a little over one percentage point higher than the previous result. Adding more neurons seem to either overfit the data of simply make the model worse. 
+
+Adding more layers to the best performing amount of neurons (100 neurons), had another slight increase in test accuracy with three layers, but more than that would go back to previous performance. In the end the best H2O best we have up until now is:
+
+| Model             | Training Accuracy | Test Accuracy | CV Accuracy | Time |
+|:-----------------:|:-----------------:|:-------------:|:-----------:|:----:|
+| H2O.NN(100X3)     | 90.13%            | 83.52%        | 79.38%      | ~9m  |
+
+### Hyperparameter Optimization with H2O
+
+I couldn't help but wonder if doing all the above was all in vain, and after a little research, it turns out it is. Trying all the different configurations is called hyperparameter optimization, and it turns out H2O already has [ways to do it automatically](https://github.com/h2oai/h2o-training-book/blob/master/hands-on_training/deep_learning.md). 
+
+```r
+models <- c()
+for (i in 1:100) {
+  rand_activation <- c("Tanh", "TanhWithDropout", "Rectifier","RectifierWithDropout", "Maxout", "MaxoutWithDropout")[sample(1:6,1)]
+  rand_numlayers <- sample(2:5,1)
+  rand_hidden <- c(sample(10:150,rand_numlayers,T))
+  rand_l1 <- runif(1, 0, 1e-3)
+  rand_l2 <- runif(1, 0, 1e-3)
+  if (rand_activation == "TanhWithDropout" ||
+      rand_activation == "RectifierWithDropout" ||
+      rand_activation == "MaxoutWithDropout"){
+    rand_dropout <- c(runif(rand_numlayers, 0, 0.6))
+  }
+  else {
+    rand_dropout <- NULL
+  }
+  rand_input_dropout <- runif(1, 0, 0.5)
+  print(i)
+  print(rand_activation)
+  print(rand_hidden)
+  dlmodel <- h2o.deeplearning(x=2:8, y=1, training_frame = hdata_train, 
+                              validation_frame = hdata_test, 
+                              epochs=10,
+                              activation=rand_activation, 
+                              hidden=rand_hidden, 
+                              l1=rand_l1, 
+                              l2=rand_l2,
+                              input_dropout_ratio=rand_input_dropout, 
+                              hidden_dropout_ratios=rand_dropout,
+                              shuffle_training_data = TRUE)
+  models <- c(models, dlmodel)
+}
+
+best_model <- models[[1]]
+best_err <- 10000
+for (i in 1:length(models)) {
+  tmp = length(models[[i]]@model$scoring_history$validation_classification_error)
+  err <- models[[i]]@model$scoring_history$validation_classification_error[tmp]
+  if (err < best_err) {
+    best_err <- err
+    best_model <- models[[i]]
+  }
+}
+```
+
+After running 100 models, the best accuracy I got was 81.32%, which is below our best value from our manual optimization. So I removed the code where I set the seed, to be able to continue trying new random models. 
+
+```r
+#set.seed(1320)
+```
+
+After not much, literally less than 5 mintues, I found one performing better than all our previous ones, with the following parameters:
+
+```r
+rand_activation = "MaxoutWithDropout"
+rand_numlayers = 4
+rand_hidden = 14  89 131 100
+rand_l1 = 0.0008139814411
+rand_l2 = 0.0007643658533
+rand_dropout = 0.2791191946 0.5330941551 0.1936496541 0.3975803810
+rand_input_dropout = 0.4756453692
+accuracy = 1-best_err = 0.8775510204
+```
+
+An **87.76% test accuracy** without any manual tinkering is great! 
+
+Next I modified the program to execute until it finds a model with at least 90% test accuracy:
+
+```r
+tmp_min_err = 10000
+#for (i in 1:100) {
+while (TRUE) {
+  
+  ...
+
+  print(i)
+  print(rand_activation)
+  print(rand_hidden)
+
+  ...
+
+  models <- c(models, dlmodel)
+  
+  tmp = length(dlmodel@model$scoring_history$validation_classification_error)
+  tmp_err <- dlmodel@model$scoring_history$validation_classification_error[tmp]
+
+  j = round((1-tmp_err)*100,0)
+  acc_dist[j] = acc_dist[j]+1
+
+  if (tmp_err < tmp_min_err) {
+    tmp_min_err = tmp_err
+    tmp_best_model = dlmodel
+    tmp_i = i
+    tmp_act = rand_activation
+    tmp_hidden = rand_hidden
+  }
+  print(sprintf("Accuracy %f; Max Accuracy %f",1-tmp_err,1-tmp_min_err))
+  print(sprintf("Best params: %i | %s | %s ", tmp_i, tmp_act, paste(tmp_hidden,collapse=" ")))
+  if ((1-tmp_err) >= 0.90){
+    break
+  }
+}
+```
+
+After trying around 1000 models, the best it got was an accuracy of 87.95%
+
+- hidden: 13 83 55 17  2
+- activation: "Maxout"
+- l1 0.0003747799955
+- l2 0.000147706815
+- accuracy: 1-best_err: 0.8795180723
+- input_dropout: 0.1586
+
+I saved the amount of models with each accuracy rounded to zero decimal places. The following table shows its distribution, following by a histogram. You can see in the image below, that the behavior is that of a normal distribution, which makes sense as we did random sampling. 85% of the models have an accuracy between 78% and 86%, and the best performing model is an outlier at 88%.
+
+| Accuracy of Model | Percentage of Models |
+|:-----------------:|:--------------------:|
+| 34                | 0.523560%            |
+| 52                | 0.104712%            |
+| 58                | 0.104712%            |
+| 60                | 0.104712%            |
+| 63                | 0.104712%            |
+| 66                | 0.104712%            |
+| 67                | 0.104712%            |
+| 70                | 0.418848%            |
+| 71                | 0.314136%            |
+| 72                | 0.209424%            |
+| 73                | 0.837696%            |
+| 75                | 1.047120%            |
+| 76                | 2.722513%            |
+| 77                | 6.387435%            |
+| 78                | 8.167539%            |
+| 80                | 8.376963%            |
+| 81                | 11.727749%           |
+| 82                | 20.104712%           |
+| 83                | 17.696335%           |
+| 84                | 12.774869%           |
+| 86                | 6.596859%            |
+| 87                | 1.361257%            |
+| 88                | 0.104712%            |
+
+![Hyperparameter Optimization Model Distribution]({{ site.baseurl }}/images/h2o_hpo_nn.png)
+
+After this I saved the best model to disk, to later use and reference.
+
+```r
+h2o.saveModel(best_model, path=getwd(), force=T)
+```
+
+# Random Forests
+
+Next model to try is random forests, which H2O already has a package for. The code is simple:
+
+```r
+RF = h2o.randomForest(x=2:8,y=1,training_frame=hdata_train,
+                      validation_frame=hdata_test,
+                      nfolds=10,
+                      ntrees=50,
+                      max_depth=20)
+```
+
+I just added the nfolds = 10, ntrees and max_depth are the default values, and are the hyperparameters I decided to play with. According to the first answer [here](http://stats.stackexchange.com/questions/53240/practical-questions-on-tuning-random-forests), deeper trees reduces bias and more trees reduces variance. Another important hyperparameter would be mtries (Number of variables randomly sampled as candidates at each split.), which default to sqrt(p) for classification. Also, [it seems](http://stackoverflow.com/questions/34997134/random-forest-tuning-tree-depth-and-number-of-trees) that 128 is the ntrees where gains become negligible.
+
+Based on the above, here is my code for hyperparameter optimization:
+
+```r
+for (i in 1:1000) {
+  rand_ntrees = sample(1:128,1)
+  rand_max_depth = sample(1:128,1)
+  rand_mtries = sample(1:7,1)
+  RF = h2o.randomForest(x=2:8,y=1,training_frame=hdata_train,
+                        validation_frame=hdata_test,
+                        nfolds=10,
+                        ntrees=rand_ntrees,
+                        max_depth=rand_max_depth,
+                        mtries=rand_mtries
+                        )
+  ...
+}
+```
+
+After 1000 models here are the results of the best models for test and for cross validation:
+
+|                     | Best Test Model | Best CV Model |
+|:-------------------:|:---------------:|:-------------:|
+| ntrees              | 36              | 44            |
+| max_Depth           | 30              | 8             |
+| mtries              | 3               | 7             |
+
+The models' accuracy distribution for test accuracy:
+
+| Accuracy of Model | Percentage of Models |
+|:-----------------:|:--------------------:|
+| 50                | 0.200000%            |
+| 68                | 0.100000%            |
+| 69                | 0.200000%            |
+| 70                | 0.900000%            |
+| 71                | 2.100000%            |
+| 72                | 2.500000%            |
+| 73                | 5.900000%            |
+| 74                | 6.400000%            |
+| 75                | 2.600000%            |
+| 76                | 4.700000%            |
+| 77                | 2.800000%            |
+| 78                | 5.000000%            |
+| 79                | 3.100000%            |
+| 80                | 4.700000%            |
+| 81                | 5.800000%            |
+| 82                | 4.800000%            |
+| 83                | 6.600000%            |
+| 84                | 6.400000%            |
+| 85                | 10.500000%           |
+| 86                | 6.000000%            |
+| 87                | 5.100000%            |
+| 88                | 6.200000%            |
+| 89                | 4.900000%            |
+| 90                | 2.200000%            |
+| 91                | 0.200000%            |
+| 93                | 0.100000%            |
+
+![Hyperparameter Optimization Test Accuracy]({{ site.baseurl }}/images/h2o_hpo_rftest.png)
+
+The models' accuracy distribution for cross validation accuracy:
+
+| Accuracy of Model | Percentage of Models |
+|:-----------------:|:--------------------:|
+| 71                | 0.100000%            |
+| 73                | 0.200000%            |
+| 74                | 0.100000%            |
+| 75                | 0.100000%            |
+| 76                | 0.200000%            |
+| 77                | 0.800000%            |
+| 78                | 0.700000%            |
+| 79                | 1.100000%            |
+| 80                | 1.400000%            |
+| 81                | 2.500000%            |
+| 82                | 6.700000%            |
+| 83                | 19.100000%           |
+| 84                | 37.400000%           |
+| 85                | 23.800000%           |
+| 86                | 5.800000%            |
+
+![Hyperparameter Optimization CV Accuracy]({{ site.baseurl }}/images/h2o_hpo_rfcv.png)
+
+We can again notice a more or less normal distribution. However, there are a few differences. The test values are more spread out, and usually the CV accuracy is higher. 
+
+
+| Model           | Training Accuracy | Test Accuracy | CV Accuracy |
+|:---------------:|:-----------------:|:-------------:|:-----------:|
+| H2O.RF          | 81.83%            | 86.59%        | 81.21%      |
+| H2O.RF(test)    | 81.23%            | 92.78%        | 79.22%      |
+| H2O.RF(cv)      | 83.89%            | 72.62%        | 85.63%      |
+
