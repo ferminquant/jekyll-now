@@ -11,686 +11,654 @@ I found part I and II better explained and more useful. Part III seems to be mor
 
 Note: I wrote gamma instead of lambda in quite a few cases. When I realized, I just started using lambda but left the previous incorrect uses of gamma unchanged.
 
-In this post I use different classification algorithms, using the training data from [Kaggle](https://www.kaggle.com/c/titanic/data). The data is small, and you can't get more, so the full difference between algorithms probably won't be noticed. I put up the whole code on my [Github](https://github.com/ferminquant/TitanicSurvival).
-
 <!-- MarkdownTOC autolink="true" bracket="round" depth="0" style="unordered" indent="  " autoanchor="false" -->
 
-- [Linear Model](#linear-model)
-- [Generalized Linear Model](#generalized-linear-model)
-- [Neural Networks](#neural-networks)
-  - [R package: neuralnet](#r-package-neuralnet)
-  - [H2O library in R](#h2o-library-in-r)
-    - [Hyperparameter Optimization with H2O](#hyperparameter-optimization-with-h2o)
-- [Random Forests](#random-forests)
+- [I. The Problem](#i-the-problem)
+  - [Chapter 1 Introduction](#chapter-1-introduction)
+    - [1.1 Reinforcement Learning](#11-reinforcement-learning)
+    - [1.2 Examples](#12-examples)
+    - [1.3 Elements of Reinforcement Learning](#13-elements-of-reinforcement-learning)
+    - [1.4 An Extended Example: Tic-Tac-Toe](#14-an-extended-example-tic-tac-toe)
+    - [1.5 Summary](#15-summary)
+    - [1.6 History of Reinforcement Learning](#16-history-of-reinforcement-learning)
+    - [1.7 Bibliographical Remarks](#17-bibliographical-remarks)
+  - [Chapter 2 Evaluative Feedback](#chapter-2-evaluative-feedback)
+    - [2.1 An n-Armed Bandit Problem](#21-an-n-armed-bandit-problem)
+    - [2.2 Action-Value Methods](#22-action-value-methods)
+    - [2.3 Softmax Action Selection](#23-softmax-action-selection)
+    - [2.4 Evaluation Versus Instruction](#24-evaluation-versus-instruction)
+    - [2.5 Incremental Implementation](#25-incremental-implementation)
+    - [2.6 Tracking a Nonstationary Problem](#26-tracking-a-nonstationary-problem)
+    - [2.7 Optimistic Initial Values](#27-optimistic-initial-values)
+    - [2.8 Reinforcement Comparison](#28-reinforcement-comparison)
+    - [2.9 Pursuit Methods](#29-pursuit-methods)
+    - [2.10 Associative Search](#210-associative-search)
+    - [2.11 Conclusions](#211-conclusions)
+    - [2.12 Bibliographical and Historical Remarks](#212-bibliographical-and-historical-remarks)
+  - [Chapter 3 The Reinforcement Learning Problem](#chapter-3-the-reinforcement-learning-problem)
+    - [3.1 The Agent-Environment Interface](#31-the-agent-environment-interface)
+    - [3.2 Goals and Rewards](#32-goals-and-rewards)
+    - [3.3 Returns](#33-returns)
+    - [3.4 Unified Notation for Episodic and Continuing Tasks](#34-unified-notation-for-episodic-and-continuing-tasks)
+    - [3.5 The Markov Property](#35-the-markov-property)
+    - [3.6 Markov Decision Processes](#36-markov-decision-processes)
+    - [3.7 Value Functions](#37-value-functions)
+    - [3.8 Optimal Value Functions](#38-optimal-value-functions)
+    - [3.9 Optimality and Approximation](#39-optimality-and-approximation)
+    - [3.10 Summary](#310-summary)
+    - [3.11 Bibliographical and Historical Remarks](#311-bibliographical-and-historical-remarks)
+- [II. Elementary Solution Methods](#ii-elementary-solution-methods)
+  - [Chapter 4 Dynamic Programming](#chapter-4-dynamic-programming)
+    - [4.1 Policy Evaluation](#41-policy-evaluation)
+    - [4.2 Policy Improvement](#42-policy-improvement)
+    - [4.3 Policy Iteration](#43-policy-iteration)
+    - [4.4 Value Iteration](#44-value-iteration)
+    - [4.5 Asynchronous Dynamic Programming](#45-asynchronous-dynamic-programming)
+    - [4.6 Generalized Policy Iteration](#46-generalized-policy-iteration)
+    - [4.7 Efficiency of Dynamic Programming](#47-efficiency-of-dynamic-programming)
+    - [4.8 Summary](#48-summary)
+    - [4.9 Bibliographical and Historical Remarks](#49-bibliographical-and-historical-remarks)
+  - [Chapter 5 Monte Carlo Methods](#chapter-5-monte-carlo-methods)
+    - [5.1 Monte Carlo Policy Evaluation](#51-monte-carlo-policy-evaluation)
+    - [5.2 Monte Carlo Estimation of Action Values](#52-monte-carlo-estimation-of-action-values)
+    - [5.3 Monte Carlo Control](#53-monte-carlo-control)
+    - [5.4 On-Policy Monte Carlo Control](#54-on-policy-monte-carlo-control)
+    - [5.5 Evaluating One Policy While Following Another](#55-evaluating-one-policy-while-following-another)
+    - [5.6 Off-Policy Monte Carlo Control](#56-off-policy-monte-carlo-control)
+    - [5.7 Incremental Implementation](#57-incremental-implementation)
+    - [5.8 Summary](#58-summary)
+    - [5.9 Bibliographical and Historical Remarks](#59-bibliographical-and-historical-remarks)
+  - [Chapter 6 Temporal-Difference Learning](#chapter-6-temporal-difference-learning)
+    - [6.1 TD Prediction](#61-td-prediction)
+    - [6.2 Advantages of TD Prediction Methods](#62-advantages-of-td-prediction-methods)
+    - [6.3 Optimality of TD\(0\)](#63-optimality-of-td0)
+    - [6.4 Sarsa: On-Policy TD Control](#64-sarsa-on-policy-td-control)
+    - [6.5 Q-Learning: Off-Policy TD Control](#65-q-learning-off-policy-td-control)
+    - [6.6 Actor-Critic Methods](#66-actor-critic-methods)
+    - [6.7 R-Learning for Undiscounted Continuing Tasks](#67-r-learning-for-undiscounted-continuing-tasks)
+    - [6.8 Games, Afterstates, and Other Special Cases](#68-games-afterstates-and-other-special-cases)
+    - [6.9 Summary](#69-summary)
+    - [6.10 Bibliographical and Historical Remarks](#610-bibliographical-and-historical-remarks)
+- [III. A Unified View](#iii-a-unified-view)
+  - [Chapter 7 Eligibility Traces](#chapter-7-eligibility-traces)
+    - [7.1 n-Step TD Prediction](#71-n-step-td-prediction)
+    - [7.2 The Forward View of TD\(gamma\)](#72-the-forward-view-of-tdgamma)
+    - [7.3 The Backward View of TD\(gamma\)](#73-the-backward-view-of-tdgamma)
+    - [7.4 Equivalence of Forward and Backward Views](#74-equivalence-of-forward-and-backward-views)
+    - [7.5 Sarsa\(gamma\)](#75-sarsagamma)
+    - [7.6 Q\(gamma\)](#76-qgamma)
+    - [7.7 Eligibility Traces for Actor-Critic Methods](#77-eligibility-traces-for-actor-critic-methods)
+    - [7.8 Replacing Traces](#78-replacing-traces)
+    - [7.9 Implementation Issues](#79-implementation-issues)
+    - [7.10 Variable Lambda](#710-variable-lambda)
+    - [7.11 Conclusions](#711-conclusions)
+    - [7.12 Bibliographical and Historical Remarks](#712-bibliographical-and-historical-remarks)
+  - [Chapter 8 Generalization and Function Approximation](#chapter-8-generalization-and-function-approximation)
+    - [8.1 Value Prediction with Function Approximation](#81-value-prediction-with-function-approximation)
+    - [8.2 Gradient-Descent Methods](#82-gradient-descent-methods)
+    - [8.3 Linear Methods](#83-linear-methods)
+      - [8.3.1 Coarse Coding](#831-coarse-coding)
+      - [8.3.2 Tile Coding](#832-tile-coding)
+      - [8.3.3 Radial Basis Functions](#833-radial-basis-functions)
+      - [8.3.4 Kanerva Coding](#834-kanerva-coding)
+    - [8.4 Control with Function Approximation](#84-control-with-function-approximation)
+    - [8.5 Off-Policy Bootstrapping](#85-off-policy-bootstrapping)
+    - [8.6 Should We Bootstrap?](#86-should-we-bootstrap)
+    - [8.7 Summary](#87-summary)
+    - [8.8 Bibliographical and Historical Remarks](#88-bibliographical-and-historical-remarks)
+  - [Chapter 9 Planning and Learning](#chapter-9-planning-and-learning)
+    - [9.1 Models and Planning](#91-models-and-planning)
+    - [9.2 Integrating Planning, Acting, and Learning](#92-integrating-planning-acting-and-learning)
+    - [9.3 When the Model is Wrong](#93-when-the-model-is-wrong)
+    - [9.4 Prioritized Sweeping](#94-prioritized-sweeping)
+    - [9.5 Full vs. Sample Backups](#95-full-vs-sample-backups)
+    - [9.6 Trajectory Sampling](#96-trajectory-sampling)
+    - [9.7 Heuristic Search](#97-heuristic-search)
+    - [9.8 Summary](#98-summary)
+    - [9.9 Bibliographical and Historical Remarks](#99-bibliographical-and-historical-remarks)
+  - [Chapter 10 Dimensions of Reinforcement Learning](#chapter-10-dimensions-of-reinforcement-learning)
+    - [10.1 The Unified View](#101-the-unified-view)
+    - [10.2 Other Frontier Dimensions](#102-other-frontier-dimensions)
+  - [Chapter 11 Case Studies](#chapter-11-case-studies)
+    - [11.1 TD-Gammon](#111-td-gammon)
+    - [11.2 Samuel's Checkers Player](#112-samuels-checkers-player)
+    - [11.3 The Acrobot](#113-the-acrobot)
+    - [11.4 Elevator Dispatching](#114-elevator-dispatching)
+    - [11.5 Dynamic Channel Allocation](#115-dynamic-channel-allocation)
+    - [11.6 Job-Shop Scheduling](#116-job-shop-scheduling)
+  - [Bibliography](#bibliography)
 
 <!-- /MarkdownTOC -->
 
-# Linear Model
-
-The first algorithm used is a simple linear model, for which I used the lm function from R.
-
-```r 
-set.seed(1320)
-data = read.csv("train.csv", header = TRUE)
-data$Age = ifelse(is.na(data$Age), -1, data$Age)
-formula = Survived ~ Pclass + Sex + Age + SibSp + Parch + Fare + Embarked
-```
-
-As a first step I loaded the data, replaced all NA ages with -1, and decided on ignoring the following columns:
-
-- PassengerId: it is a unique identifier for each passenger, I found no way for it to be helpful for predicting survival.
-- Name: same as with PassengerId.
-- Ticket: again, same as the two above.
-- Cabin: might have been useful, but 77% of the data is empty, and some passengers have many cabins. If it had a more complete data set, and something in the Cabin name, like the preceding letter indicated something useful (like the position in the ship), I would have not ignored it.
-
-The ones I did include are:
-
-- Pclass: the passenger class, because first class might have been in a more "escapable" position, or would have been given priority.
-- Sex: usually on such emergencies, the call is to save women and children first, data will tell us if it held true this time.
-- Age: as with sex, younger women and children are given priority.
-- SibSp: if they had siblings or a spouse onboard, as in someone to help them.
-- Parch: parents or children, again someone to help you survive, or as a parent sacrifice yourself for your children, could be possibilities.
-- Fare: how much they paid for their ticket, rich people usually get priority in our unfair society, although in emergencies it might not hold true.
-- Embarked: where they embarked, it could hold more information about their background.
-
-```r
-for(j in 1:100){
-}
-```
-I repeat the code 100 times and get an average, just as an extra measure to prevent overfitting.
-
-```r
-  data = data[sample(NROW(data)),]
-```
-At the start of each cycle, I shuffle the data randomly.
-  
-```r
-  n_folds = 10
-  folds = cut(seq(1,NROW(data)),breaks=n_folds,labels=FALSE)
-  
-  for(i in 1:n_folds){
-  }
-```
-Then I start a 10 fold cross validation, again to avoid overfitting.
-
-```r
-    indexes = which(folds==i,arr.ind=TRUE)
-    test_data = data[indexes, ]
-    train_data = data[-indexes, ]
-    
-    model = lm(formula, train_data)
-```
-Separate train data from test data. For each cross validation iteration 9 parts to train data and 1 part to test data.
-Then, train the linear model with the lm function.
-
-```r    
-    # for cases when test data has values not in train data
-    source("missingLevelsToNA.R")
-    test_data = missingLevelsToNA(model,test_data)
-```
-This code is to prevent the next line from failing. I believe this should be done automatically in the predict function, but the coder who made the R function thought differently. What happens is that the Embarked column has only two values for "" or empty string. If those two values happen to stay in the test data, then the model does not know them, and can't evaluate them, and fails. In my opinion, it should just throw a warning. I got the code to replace the values not in the training data with NA in the test data from [here](http://stackoverflow.com/questions/4285214/predict-lm-with-an-unknown-factor-level-in-test-data).
-
-```r    
-    test_data$prediction = predict(model, test_data)
-```
-Code to predict data from the test data using the resulting model. The results are created as a new column in the test data called prediction, which is a real number between 0 and 1, indicating the probability of surviving or not.
-
-```r    
-    threshold = 0.5
-    test_data$result = ifelse(test_data$Survived == 0 & test_data$prediction <  threshold, 'TN', 
-                              ifelse(test_data$Survived == 0 & test_data$prediction >= threshold, 'FP', 
-                                     ifelse(test_data$Survived == 1 & test_data$prediction >= threshold, 'TP', 'FN')))
-    
-    tmp = table(test_data$result)
-    
-    if(is.na(tmp['FN'])){FN = 0} else {FN = tmp['FN']}
-    if(is.na(tmp['FP'])){FP = 0} else {FP = tmp['FP']}
-    if(is.na(tmp['TN'])){TN = 0} else {TN = tmp['TN']}
-    if(is.na(tmp['TP'])){TP = 0} else {TP = tmp['TP']}
-```
-I decided on the simplest threshold of 0.5, meaning if the prediction is at least 0.5 then it is predicting it survived. Then I evaluate the confusion matrix, taking each value into a variable for future calculations:
-
-- TN: True Negative, didn't survive and predicted to not survive.
-- FP: False Positive, didn't survive and predicted to survive.
-- TP: True Positive, survived and predicted to survive.
-- FN: False Negative, survived and predicted to not survive.
-    
-```r    
-    accuracy[i] = as.numeric((TN+TP)/sum(tmp))
-    error[i] = as.numeric((FN+FP)/sum(tmp))
-    precision[i] = as.numeric(TP/(TP+FP))
-    recall[i] = as.numeric(TP/(TP+FN))
-    specificity[i] = as.numeric(TN/(TN+FP))
-    fscore[i] = 2*((precision[i]*recall[i])/(precision[i]+recall[i]))
-    false_positive_rate[i] = as.numeric(FP/(TN+FP))
-```
-Now, using the metrics from before, I evaluate other metrics to get a better idea of the model performance:
-
-- Accuracy: percentage of correct predictions from the test data.
-- Error: percentage of incorrect predictions from the test data.
-- Precision: of those predicted to survive, how many really survived.
-- Recall: of those who survived, how many were predicted to survive.
-- Specificity: of those who did not survived, how many were predicted to not survive.
-- F1 Score: it gives you an idea of the accuracy. For more information read [this](https://en.wikipedia.org/wiki/F1_score).
-- False Positive Rate: of those who did not survive, how many were predicted to survive.
-
-After running the code in my "titanic_lm.R" file, these were my results:
-
-| Model        | **Accuracy** | Error  | Precision | Recall | Specificity | F1 Score | FP Rate |
-|:------------:|:------------:|:------:|:---------:|:------:|:-----------:|:--------:|:-------:|
-| Linear Model | **78.16%**   | 21.84% | 73.27%    | 67.95% | 84.56%      | 70.20%   | 15.44%  |
-
-For comparison between models, I will concentrate on the simple measure of accuracy. The trade-off between precision and recall, and the other metrics are more specific to the business problem you solve with these classification algorithms, which do not have much relevance here. They are good for reference, but no need to deeply analyze them here.
-
-# Generalized Linear Model
-
-The second algorithm is just a slight variation, the Generalized Linear Model, for which I used the glm function in R with a binomial distribution. All the code is the same as above, except where we train the model and predict the test values, which now is as follows:
-
-```r
-    model = glm(formula, family = binomial(link='logit'), train_data)
-    
-    test_data$prediction = predict(model, newdata=test_data, type='response')
-```
-
-After running the code in my "titanic_glm.R" file, these were my results:
-
-| Model        | **Accuracy** | Error  | Precision | Recall | Specificity | F1 Score | FP Rate |
-|:------------:|:------------:|:------:|:---------:|:------:|:-----------:|:--------:|:-------:|
-| Linear Model | **78.16%**   | 21.84% | 73.27%    | 67.95% | 84.56%      | 70.20%   | 15.44%  |
-| GLM          | **78.69%**   | 21.31% | 73.50%    | 69.66% | 84.36%      | 71.22%   | 15.64%  |
-
-Overall, it didn't really improve much, I would even consider them to have the same performance, not that I expected much difference between lm and glm.
-
-# Neural Networks
-
-The third algorithm is neural networks. 
-
-## R package: neuralnet
-
-As a start, I used the neuralnet package in R:
-
-```r
-library(neuralnet)
-```
-
-From what I have read in a lot of places which I do not remember, it is recommended to have one hidden layer with at least the same amount of nodes as input nodes, and up to 4 times the input nodes. Since I am experimenting, I will ignore that advice, and try a lot of different configurations. Hopefully, something interesting comes out.
-
-Since neural networks take much more time than lm or glm to train, I removed the 100 cycle loop, and will only do a regular 10 fold cross validation. For the neuralnet package, you need to ready the data to feed it into the neural network, as in transform the categorical variables into numerical values, which is done like this:
-
-```r
-data = model.matrix(~ Survived + Pclass + Sex + Age + SibSp + Parch + Fare + Embarked, data)
-```
-
-You also need to scale the values, so that all columns have values between 0 and 1. I achieved it like this:
-```r
-maxs = apply(data, 2, max)
-mins = apply(data, 2, min)
-data = as.data.frame(scale(data, center = mins, scale = maxs - mins))
-```
-
-Then I train the neural network. For a start I will try with one hidden layer with only one node, the lamest configuration I could think of.
-
-```r
-  model = neuralnet( 
-    Survived ~ Pclass + Sexmale + Age + SibSp + Parch + Fare + EmbarkedC + EmbarkedQ + EmbarkedS, 
-    data=train_data, hidden=c(1), threshold=0.05, stepmax=1e+07, lifesign='full',
-    lifesign.step = 25000, rep=1, linear.output=FALSE
-  )
-```
-A small explanation of the parameters I chose:
-
-- hidden: this is a list indicating the layers and amount of nodes in each layer. For two layers with 3 nodes each you would input c(3,3). Since this is the first example, I just chose one layer with one node.
-- threshold: this is the stopping criteria of the error function. The value 0.01 is the default value set by neuralnet. I chose 0.05 expecting accuracy to not suffer much, and avoid performance issues with my laptop CPU.
-- stepmax: the maximum number of steps to train the network for it to converge. The default is 1e+05, which should be enough, I just felt like increasing it.
-- lifesign: just a flag to show or not the progress of the training. Full chooses to show progress every x amount of steps, defined in the next parameter.
-- lifesign.step: the amount of steps to wait to show an update to the training process, when lifesign "full" is chosen.
-- rep: 1 is the default. It is the amount of times the network is trained. If greater than, at the end it chooses the best result. 
-- linear.output: I chose FALSE since it is a classification problem, TRUE is for regression.
-
-After training, there is no need to set missing values to NA like in lm and glm above, so that code was omitted. Now the prediction over the test data.
-
-```r
-  test_data$prediction = compute(model,test_data[,3:11])$net.result
-```
-
-The rest of the code for the confusion matrix and the other calculations is the same.
-After running the code in my "titanic_nn.R" file, these were my results:
-
-| Model        | **Accuracy** | Error  | Precision | Recall | Specificity | F1 Score | FP Rate | Time |
-|:------------:|:------------:|:------:|:---------:|:------:|:-----------:|:--------:|:-------:|:----:|
-| Linear Model | **78.16%**   | 21.84% | 73.27%    | 67.95% | 84.56%      | 70.20%   | 15.44%  | <1s  |
-| GLM          | **78.69%**   | 21.31% | 73.50%    | 69.66% | 84.36%      | 71.22%   | 15.64%  | <1s  |
-| NN(1)        | **79.91%**   | 20.09% | 83.45%    | 60.05% | 92.41%      | 69.29%   |  7.59%  | <1s  |
-
-It got a little better than glm, however it seems to be a little more biased into correctly predicting those who did not survive, as the specificity is specially higher. Also, precision is higher, but recall got lower, so it seems it is more conservative on predicting survival, and the F1 Score is lower. 
-
-In any case, this was the lamest neural network configuration I could think of, it has one node in one hidden layer, and it still outperformed lm and glm, seems interesting. I added a column to see how much time it took to train each cross validation iteration on my CPU, just for reference.
-
-Now I will test a lot of configurations in the hidden layer, to see if they make a difference.
-
-| Model        | **Accuracy** | Error  | Precision | Recall | Specificity | F1 Score | FP Rate | Time |
-|:------------:|:------------:|:------:|:---------:|:------:|:-----------:|:--------:|:-------:|:----:|
-| Linear Model | **78.16%**   | 21.84% | 73.27%    | 67.95% | 84.56%      | 70.20%   | 15.44%  | <1s  |
-| GLM          | **78.69%**   | 21.31% | 73.50%    | 69.66% | 84.36%      | 71.22%   | 15.64%  | <1s  |
-| NN(1)        | **79.91%**   | 20.09% | 83.45%    | 60.05% | 92.41%      | 69.29%   |  7.59%  | <1s  |
-| NN(2)        | **79.34%**   | 20.66% | 82.74%    | 59.33% | 91.77%      | 68.46%   |  8.23%  | <1s  |
-| NN(3)        | **80.46%**   | 19.54% | 84.18%    | 61.16% | 92.61%      | 70.23%   |  7.39%  | <1s  |
-| NN(4)        | **79.90%**   | 20.10% | 79.57%    | 64.79% | 89.47%      | 71.02%   | 10.53%  | ~1s  |
-| NN(5)        | **81.03%**   | 18.97% | 81.63%    | 65.17% | 90.97%      | 72.07%   |  9.03%  | ~2s  |
-| NN(6)        | **80.46%**   | 19.54% | 78.56%    | 67.55% | 88.09%      | 72.38%   | 11.91%  | ~2s  |
-| NN(7)        | **81.47%**   | 18.53% | 81.39%    | 67.40% | 90.04%      | 73.39%   |  9.96%  | ~2s  |
-| NN(8)        | **80.46%**   | 19.54% | 78.24%    | 69.14% | 87.40%      | 72.82%   | 12.60%  | ~4s  |
-| NN(9)        | **80.92%**   | 19.08% | 80.14%    | 67.21% | 89.33%      | 72.67%   | 10.67%  | ~5s  |
-| NN(10)       | **80.13%**   | 19.87% | 77.81%    | 68.36% | 87.39%      | 72.06%   | 12.61%  | ~7s  |
-| NN(20)       | **81.02%**   | 18.98% | 77.49%    | 71.49% | 86.97%      | 73.89%   | 13.03%  | ~12s |
-| NN(30)       | **78.89%**   | 21.11% | 74.57%    | 68.83% | 85.12%      | 71.09%   | 14.88%  | ~20s |
-| NN(40)       | **79.23%**   | 20.77% | 75.68%    | 68.04% | 86.28%      | 71.08%   | 13.72%  | ~30s |
-| NN(50)       | **80.35%**   | 19.65% | 76.03%    | 71.56% | 86.25%      | 73.25%   | 13.75%  | ~40s |
-| NN(60)       | **78.55%**   | 21.45% | 74.79%    | 67.08% | 85.74%      | 70.10%   | 14.26%  | ~2m  |
-| NN(70)       | **78.56%**   | 21.44% | 73.58%    | 69.70% | 84.23%      | 70.98%   | 15.77%  | ~2m  |
-| NN(80)       | **74.62%**   | 25.38% | 69.51%    | 75.44% | 74.86%      | 70.43%   | 25.14%  | ~1m  |
-| NN(90)       | **79.57%**   | 20.43% | 75.55%    | 69.67% | 85.76%      | 71.87%   | 14.24%  | ~1m  |
-| NN(100)      | **78.66%**   | 21.34% | 74.37%    | 68.13% | 85.37%      | 70.63%   | 14.63%  | ~1m  |
-
-It seems from the results above that the recommendations gave a good results. Not much difference is seen, but the best results considering all metrics, seem to be with 20 neurons, 2x the amount of inputs, it has one of the highest accuracies in the 81% range, and has the highest F1 Score. 
-
-Here is the image of the last model with 100 hidden neurons, just for fun's sake:
-
-![100 hidden neurons]({{ site.baseurl }}/images/100-neuron-nn.png)
-
-To finish this part of experimentation with neural networks, I am going to trim the other results before continuing. 
-Now to test multiple layers!
-
-| Model        | **Accuracy** | Error  | Precision | Recall | Specificity | F1 Score | FP Rate | Time |
-|:------------:|:------------:|:------:|:---------:|:------:|:-----------:|:--------:|:-------:|:----:|
-| Linear Model | **78.16%**   | 21.84% | 73.27%    | 67.95% | 84.56%      | 70.20%   | 15.44%  | <1s  |
-| GLM          | **78.69%**   | 21.31% | 73.50%    | 69.66% | 84.36%      | 71.22%   | 15.64%  | <1s  |
-| NN(20)       | **81.02%**   | 18.98% | 77.49%    | 71.49% | 86.97%      | 73.89%   | 13.03%  | ~12s |
-| NN(10,10)    | **76.87%**   | 23.13% | 71.53%    | 67.48% | 82.94%      | 68.79%   | 17.06%  | ~5m  |
-| NN(20,20)    | **78.00%**   | 22.00% | 71.39%    | 70.54% | 82.70%      | 70.66%   | 17.30%  | ~5m  |
-| NN(30,30)    | **77.89%**   | 22.11% | 71.41%    | 69.80% | 82.89%      | 70.08%   | 17.11%  | ~5m  |
-| NN(40,40)    | **77.54%**   | 22.46% | 70.60%    | 70.66% | 81.72%      | 70.31%   | 18.28%  | ~5m  |
-| NN(50,50)    | **61.81%**   | 38.19% | NaN       | 64.35% | 62.22%      | NaN      | 37.78%  | ~3m  |
-| NN(20,10)    | **77.32%**   | 22.68% | 71.53%    | 68.56% | 82.99%      | 69.45%   | 17.01%  | ~15m |
-| NN(20,40)    | **76.09%**   | 23.91% | 68.40%    | 69.23% | 80.36%      | 68.34%   | 19.64%  | ~7m  |
-| NN(20,60)    | **73.84%**   | 26.16% | NaN       | 62.08% | 83.39%      | NaN      | 16.61%  | ~7m  |
-| NN(20,80)    | **61.28%**   | 38.72% | NaN       | 46.59% | 72.25%      | NaN      | 27.75%  | ~5m  |
-| NN(100,100)  | **45.88%**   | 54.12% | NaN       | 80.00% | 20.00%      | NaN      | 80.00%  | <1s  |
-| NN(20,20,20) | **76.54%**   | 23.46% | 69.04%    | 69.86% | 80.62%      | 69.01%   | 19.38%  | ~20m |
-
-Trying more than one layer actually made the prediction much worse and inconsistent. All models with more than one hidden layer are worse than lm and glm, the worse being 2 layers of 100 neurons each, which oddly enough trained in under 1 second but got a measly 45% accuracy. Reading about these first neural networks, I found everywhere recommendations about only using one layer, and seeing no benefit to multiple layers; until now I hadn't taken the time to see if they were right, but after these results I believe them a little more. I would like to try other libraries, to avoid completely trusting the results of just one library. Hence, the results table up to now will be as follows:
-
-| Model         | **Accuracy** | Error  | Precision | Recall | Specificity | F1 Score | FP Rate | Time |
-|:-------------:|:------------:|:------:|:---------:|:------:|:-----------:|:--------:|:-------:|:----:|
-| Linear Model  | **78.16%**   | 21.84% | 73.27%    | 67.95% | 84.56%      | 70.20%   | 15.44%  | <1s  |
-| GLM           | **78.69%**   | 21.31% | 73.50%    | 69.66% | 84.36%      | 71.22%   | 15.64%  | <1s  |
-| neuralnet(20) | **81.02%**   | 18.98% | 77.49%    | 71.49% | 86.97%      | 73.89%   | 13.03%  | ~12s |
-
-## H2O library in R
-
-To continue testing with more neural networks, after some research I decided to test with [H2O for R](http://h2o-release.s3.amazonaws.com/h2o/rel-turing/10/index.html). I used R because it has been the language I have used so far, but according to H2O's [website](http://www.h2o.ai/h2o/) it can also be used in Python, Java, Scala, JSON and an API, and can also be used in [Spark](http://www.h2o.ai/sparkling-water/).
-
-```r
-library(h2o)
-library(parallel)
-#localH2O = h2o.init(nthreads=detectCores()-1)
-```
-To start, I reference the h2o library after installing it as per [their instructions](http://h2o-release.s3.amazonaws.com/h2o/rel-turing/10/index.html). The parallel library is to be able to use the function detectCores, which is used in the starting of the H2O instance, leaving one of your cores free to avoid the OS from hanging. My CPU only has 2 cores, so it was overkill though.
-
-```r
-set.seed(1320)
-data = read.csv("train.csv", header = TRUE)
-data$Age = ifelse(is.na(data$Age), -1, data$Age)
-data = data[sample(NROW(data)),]
-
-hdata = as.h2o(data)
-hdata$Survived = as.factor(hdata$Survived)
-hdata = hdata[-c(1,4,9,11)]
-```
-As before, I read the data in R, assign -1 to the empty ages, and shuffle ir randomly. Then I transfer the data into an H2O data frame, assign the Survived column as a factor so that H2O understands it is classification, and remove the unwanted columns of PassengerID, Name, Ticket and Cabin.
-
-```r
-hdata_split = h2o.splitFrame(hdata, ratios = c(0.1))
-hdata_test = hdata_split[[1]]
-hdata_train = hdata_split[[2]]
-```
-Here is where I changed the approach in comparison with before. I split the data into training data and test data, even though this was already the training data according to Kaggle, and they have their own test data. I did not split it into 10 data sets for cross validation, because H2O handles in on its own although a little differently.
-
-According to their [documentation](http://docs.h2o.ai/h2o/latest-stable/h2o-docs/cross-validation.html) their algorithms have a parameter of how many folds to use cross validation for. But it works in the following way:
-
-- If you assign, for example, 10 folds, it grabs the training data, gets 20% for internal testing, and separates the other 80% into 10 parts. 
-- It trains each part, and tests on the internal test set.
-- Trains on the hole training set, and this is the model returned.
-- If provided with a test set, which I did, predicts also on the test set.
-
-So, since the cross validation is included, you get three results or three confusion matrices, or three sets of the variables we have been comparing thus far. To keep things simple, I will only continue comparing the accuracy, althought H2O provides a full summary of all those variables and even more details like the AUC for training and testing, and the training steps and variable importance, which you can check by running the code on your own.
-
-```r
-nn = h2o.deeplearning(x = 2:8, y = 1, training_frame = hdata_train, 
-                      validation_frame = hdata_test,
-                      nfolds = 10,
-                      hidden = c(1),
-                      standardize = TRUE,
-                      activation = 'Tanh',
-                      epochs = 100,
-                      seed = 1320,
-                      shuffle_training_data = TRUE,
-                      variable_importances = TRUE)
-```
-Following a short explanation of the parameters I chose, although in their [docs](http://docs.h2o.ai/h2o/latest-stable/h2o-docs/data-science/deep-learning.html) they have way more options.
-
-- x: the column indexes of the data which are for training, so you exclude the result, the Survived column
-- y: the result column, Survived
-- training_frame: the data frame used for training
-- validation_frame: the data frame used for testing, this is optional, but if provided it predicts on its own after the training is done.
-- nfolds: the number of folds for cross validation, could be ignored to not do cross validation.
-- hidden: the layers and the amount of neurons in each, the default is two layers of 200 neuron each. 
-- standardize: this is by default TRUE, it scales the variables, which we had to do on our own before.
-- activation: I chose Tanh since it is one of the first ones used in neural networks, other options are available.
-- epochs: the number of epochs, the default is 10, but found a good balance in time and model performance was 100. 
-- seed: just a number I chose to keep results reproducible
-- shuffle_training_data: by default is disabled, it shuffles your training data
-- variable_importance: also disabled by default, it gives the list of variables ordered on importance for prediction after the model is trained. I enabled it just for reference.
-
-Notice I didn't transform categorial variables into numbers as in the previous examples. This is done by default, and you can change its behavior with the parameter categorical_encoding. I left it default since it is the same behavior as we did before, to have one column per level. Again, more details on their [docs](http://docs.h2o.ai/h2o/latest-stable/h2o-docs/data-science/deep-learning.html).
-
-```r
-summary(nn)
-```
-This gives you a big output of statistics of your training data, test data, cross validation data with each of the folds detailed, scoring history and variable importance. Basically most of what you would be interested of knowing about the resulting model.
-
-```r
-h2o.shutdown(FALSE)
-```
-Just shutdown the H2O instance at the end.
-
-Here are the results of the test I made with neural networks in H2O:
-
-
-| No | Model        | Training Accuracy | Test Accuracy | CV Accuracy | Time |
-|:--:|:------------:|:-----------------:|:-------------:|:-----------:|:----:|
-| 1  | H2O.NN(1)    | 83.00%            | 72.53%        | 82.00%      | ~2s  |
-| 2  | H2O.NN(2)    | 82.63%            | 70.33%        | 81.38%      | ~3s  |
-| 3  | H2O.NN(3)    | 78.00%            | 71.43%        | 79.25%      | ~4s  |
-| 4  | H2O.NN(4)    | 81.13%            | 79.12%        | 81.63%      | ~4s  |
-| 5  | H2O.NN(5)    | 81.38%            | 76.92%        | 77.38%      | ~4s  |
-| 6  | H2O.NN(6)    | 83.13%            | 79.12%        | 81.13%      | ~5s  |
-| 7  | H2O.NN(7)    | 83.75%            | 80.22%        | 80.88%      | ~5s  |
-| 8  | H2O.NN(8)    | 82.13%            | 78.02%        | 81.63%      | ~6s  |
-| 9  | H2O.NN(9)    | 84.00%            | 75.82%        | 82.38%      | ~6s  |
-| 10 | H2O.NN(10)   | 83.00%            | 80.22%        | 81.38%      | ~6s  |
-| 11 | H2O.NN(20)   | 83.88%            | 79.12%        | 81.13%      | ~10s |
-| 12 | H2O.NN(30)   | 83.38%            | 79.12%        | 82.75%      | ~15s |
-| 13 | H2O.NN(40)   | 83.00%            | 80.22%        | 82.13%      | ~20s |
-| 14 | H2O.NN(50)   | 82.88%            | 76.92%        | 83.00%      | ~30s |
-| 15 | H2O.NN(60)   | 83.00%            | 81.32%        | 82.50%      | ~30s |
-| 16 | H2O.NN(70)   | 83.63%            | 81.32%        | 80.38%      | ~1m  |
-| 17 | H2O.NN(80)   | 84.38%            | 80.22%        | 81.63%      | ~1m  |
-| 18 | H2O.NN(90)   | 83.88%            | 80.22%        | 82.25%      | ~1m  |
-| 19 | H2O.NN(100)  | 84.75%            | 81.32%        | 80.50%      | ~1m  |
-| 20 | H2O.NN(150)  | 83.25%            | 81.32%        | 81.00%      | ~2m  |
-| 21 | H2O.NN(200)  | 83.25%            | 80.22%        | 82.25%      | ~3m  |
-| 22 | H2O.NN(300)  | 83.38%            | 79.12%        | 81.00%      | ~3m  |
-| 23 | H2O.NN(400)  | 82.88%            | 78.02%        | 81.00%      | ~4m  |
-| 24 | H2O.NN(500)  | 84.50%            | 80.22%        | 79.63%      | ~5m  |
-| 25 | H2O.NN(1000) | 83.88%            | 74.73%        | 82.38%      | ~7m  |
-
-These were some interesting results, different from the neuralnet library. The accuracy I keep track of is the Test Accuracy, as it is the unseen examples of the models, and the real predictions.
-
-![H2O NN Chart]({{ site.baseurl }}/images/h2o_nn_acc.png)
-
-In the chart and table above, we can see that the model kept improving up to around 100 neurons, but got worse after 200, and at 1000 fell a lot more. The best performing model according to Test Accuracy are models 15 (60 neurons), 16 (70 neurons), 19 (100 neurons) and 20 (150 neurons) tied at 81.32%. So, as a way to untie them, the next most important prediction would be the cross validation accuracy, making the 60 neuron model the best one.
-
-| Model        | Training Accuracy | Test Accuracy | CV Accuracy | Time |
-|:------------:|:-----------------:|:-------------:|:-----------:|:----:|
-| H2O.NN(60)   | 83.00%            | 81.32%        | 82.50%      | ~30s |
-
-Now, to try multiple layers:
-
-| No | Model             | Training Accuracy | Test Accuracy | CV Accuracy | Time |
-|:--:|:-----------------:|:-----------------:|:-------------:|:-----------:|:----:|
-| 1  | H2O.NN(10,10)     | 82.13%            | 78.02%        | 80.00%      | ~11s |
-| 2  | H2O.NN(20,20)     | 84.63%            | 80.22%        | 81.13%      | ~25s |
-| 3  | H2O.NN(30,30)     | 85.88%            | 80.22%        | 81.25%      | ~45s |
-| 4  | H2O.NN(40,40)     | 85.13%            | 79.12%        | 81.88%      | ~1m  |
-| 5  | H2O.NN(50,50)     | 84.88%            | 79.12%        | 80.25%      | ~2m  |
-| 6  | H2O.NN(60,60)     | 86.83%            | 80.22%        | 80.75%      | ~2m  |
-| 7  | H2O.NN(70,70)     | 86.88%            | 81.32%        | 81.63%      | ~3m  |
-| 8  | H2O.NN(80,80)     | 86.88%            | 79.12%        | 81.63%      | ~4m  |
-| 9  | H2O.NN(90,90)     | 85.50%            | 80.22%        | 81.50%      | ~5m  |
-| 10 | H2O.NN(100,100)   | 87.00%            | 82.42%        | 79.88%      | ~6m  |
-| 11 | H2O.NN(150,150)   | 88.50%            | 82.42%        | 79.25%      | ~16m |
-| 12 | H2O.NN(200,200)   | 87.63%            | 79.12%        | 82.38%      | ~22m |
-| 13 | H2O.NN(500,500)   | 86.88%            | 78.02%        | 80.63%      | ~2h  |
-| 14 | H2O.NN(1000,1000) | 82.38%            | 76.92%        | 80.13%      | ~16h |
-| 15 | H2O.NN(100X3)     | 90.13%            | 83.52%        | 79.38%      | ~9m  |
-| 16 | H2O.NN(100X4)     | 89.75%            | 79.12%        | 81.88%      | ~19m |
-| 17 | H2O.NN(100X5)     | 87.75%            | 81.32%        | 81.00%      | ~27m |
-
-![H2O NN Multiple Layers Chart]({{ site.baseurl }}/images/h2o_nn2_acc.png)
-
-We can see from the results that the H2O library does work consistently with multiple layers. However, not much improvement is seen, only a little for two layers of 100 or 150 neurons, where test accuracy is 82.42%, which is a little over one percentage point higher than the previous result. Adding more neurons seem to either overfit the data of simply make the model worse. 
-
-Adding more layers to the best performing amount of neurons (100 neurons), had another slight increase in test accuracy with three layers, but more than that would go back to previous performance. In the end the best H2O best we have up until now is:
-
-| Model             | Training Accuracy | Test Accuracy | CV Accuracy | Time |
-|:-----------------:|:-----------------:|:-------------:|:-----------:|:----:|
-| H2O.NN(100X3)     | 90.13%            | 83.52%        | 79.38%      | ~9m  |
-
-### Hyperparameter Optimization with H2O
-
-I couldn't help but wonder if doing all the above was all in vain, and after a little research, it turns out it is. Trying all the different configurations is called hyperparameter optimization, and it turns out H2O already has [ways to do it automatically](https://github.com/h2oai/h2o-training-book/blob/master/hands-on_training/deep_learning.md). 
-
-```r
-models <- c()
-for (i in 1:100) {
-  rand_activation <- c("Tanh", "TanhWithDropout", "Rectifier","RectifierWithDropout", "Maxout", "MaxoutWithDropout")[sample(1:6,1)]
-  rand_numlayers <- sample(2:5,1)
-  rand_hidden <- c(sample(10:150,rand_numlayers,T))
-  rand_l1 <- runif(1, 0, 1e-3)
-  rand_l2 <- runif(1, 0, 1e-3)
-  if (rand_activation == "TanhWithDropout" ||
-      rand_activation == "RectifierWithDropout" ||
-      rand_activation == "MaxoutWithDropout"){
-    rand_dropout <- c(runif(rand_numlayers, 0, 0.6))
-  }
-  else {
-    rand_dropout <- NULL
-  }
-  rand_input_dropout <- runif(1, 0, 0.5)
-  print(i)
-  print(rand_activation)
-  print(rand_hidden)
-  dlmodel <- h2o.deeplearning(x=2:8, y=1, training_frame = hdata_train, 
-                              validation_frame = hdata_test, 
-                              epochs=10,
-                              activation=rand_activation, 
-                              hidden=rand_hidden, 
-                              l1=rand_l1, 
-                              l2=rand_l2,
-                              input_dropout_ratio=rand_input_dropout, 
-                              hidden_dropout_ratios=rand_dropout,
-                              shuffle_training_data = TRUE)
-  models <- c(models, dlmodel)
-}
-
-best_model <- models[[1]]
-best_err <- 10000
-for (i in 1:length(models)) {
-  tmp = length(models[[i]]@model$scoring_history$validation_classification_error)
-  err <- models[[i]]@model$scoring_history$validation_classification_error[tmp]
-  if (err < best_err) {
-    best_err <- err
-    best_model <- models[[i]]
-  }
-}
-```
-
-After running 100 models, the best accuracy I got was 81.32%, which is below our best value from our manual optimization. So I removed the code where I set the seed, to be able to continue trying new random models. 
-
-```r
-#set.seed(1320)
-```
-
-After not much, literally less than 5 mintues, I found one performing better than all our previous ones, with the following parameters:
-
-```r
-rand_activation = "MaxoutWithDropout"
-rand_numlayers = 4
-rand_hidden = 14  89 131 100
-rand_l1 = 0.0008139814411
-rand_l2 = 0.0007643658533
-rand_dropout = 0.2791191946 0.5330941551 0.1936496541 0.3975803810
-rand_input_dropout = 0.4756453692
-accuracy = 1-best_err = 0.8775510204
-```
-
-An **87.76% test accuracy** without any manual tinkering is great! 
-
-Next I modified the program to execute until it finds a model with at least 90% test accuracy:
-
-```r
-tmp_min_err = 10000
-#for (i in 1:100) {
-while (TRUE) {
-  
-  ...
-
-  print(i)
-  print(rand_activation)
-  print(rand_hidden)
-
-  ...
-
-  models <- c(models, dlmodel)
-  
-  tmp = length(dlmodel@model$scoring_history$validation_classification_error)
-  tmp_err <- dlmodel@model$scoring_history$validation_classification_error[tmp]
-
-  j = round((1-tmp_err)*100,0)
-  acc_dist[j] = acc_dist[j]+1
-
-  if (tmp_err < tmp_min_err) {
-    tmp_min_err = tmp_err
-    tmp_best_model = dlmodel
-    tmp_i = i
-    tmp_act = rand_activation
-    tmp_hidden = rand_hidden
-  }
-  print(sprintf("Accuracy %f; Max Accuracy %f",1-tmp_err,1-tmp_min_err))
-  print(sprintf("Best params: %i | %s | %s ", tmp_i, tmp_act, paste(tmp_hidden,collapse=" ")))
-  if ((1-tmp_err) >= 0.90){
-    break
-  }
-}
-```
-
-After trying around 1000 models, the best it got was an accuracy of 87.95%
-
-- hidden: 13 83 55 17  2
-- activation: "Maxout"
-- l1 0.0003747799955
-- l2 0.000147706815
-- accuracy: 1-best_err: 0.8795180723
-- input_dropout: 0.1586
-
-I saved the amount of models with each accuracy rounded to zero decimal places. The following table shows its distribution, following by a histogram. You can see in the image below, that the behavior is that of a normal distribution, which makes sense as we did random sampling. 85% of the models have an accuracy between 78% and 86%, and the best performing model is an outlier at 88%.
-
-| Accuracy of Model | Percentage of Models |
-|:-----------------:|:--------------------:|
-| 34                | 0.523560%            |
-| 52                | 0.104712%            |
-| 58                | 0.104712%            |
-| 60                | 0.104712%            |
-| 63                | 0.104712%            |
-| 66                | 0.104712%            |
-| 67                | 0.104712%            |
-| 70                | 0.418848%            |
-| 71                | 0.314136%            |
-| 72                | 0.209424%            |
-| 73                | 0.837696%            |
-| 75                | 1.047120%            |
-| 76                | 2.722513%            |
-| 77                | 6.387435%            |
-| 78                | 8.167539%            |
-| 80                | 8.376963%            |
-| 81                | 11.727749%           |
-| 82                | 20.104712%           |
-| 83                | 17.696335%           |
-| 84                | 12.774869%           |
-| 86                | 6.596859%            |
-| 87                | 1.361257%            |
-| 88                | 0.104712%            |
-
-![Hyperparameter Optimization Model Distribution]({{ site.baseurl }}/images/h2o_hpo_nn.png)
-
-After this I saved the best model to disk, to later use and reference.
-
-```r
-h2o.saveModel(best_model, path=getwd(), force=T)
-```
-
-# Random Forests
-
-Next model to try is random forests, which H2O already has a package for. The code is simple:
-
-```r
-RF = h2o.randomForest(x=2:8,y=1,training_frame=hdata_train,
-                      validation_frame=hdata_test,
-                      nfolds=10,
-                      ntrees=50,
-                      max_depth=20)
-```
-
-I just added the nfolds = 10, ntrees and max_depth are the default values, and are the hyperparameters I decided to play with. According to the first answer [here](http://stats.stackexchange.com/questions/53240/practical-questions-on-tuning-random-forests), deeper trees reduces bias and more trees reduces variance. Another important hyperparameter would be mtries (Number of variables randomly sampled as candidates at each split.), which default to sqrt(p) for classification. Also, [it seems](http://stackoverflow.com/questions/34997134/random-forest-tuning-tree-depth-and-number-of-trees) that 128 is the ntrees where gains become negligible.
-
-Based on the above, here is my code for hyperparameter optimization:
-
-```r
-for (i in 1:1000) {
-  rand_ntrees = sample(1:128,1)
-  rand_max_depth = sample(1:128,1)
-  rand_mtries = sample(1:7,1)
-  RF = h2o.randomForest(x=2:8,y=1,training_frame=hdata_train,
-                        validation_frame=hdata_test,
-                        nfolds=10,
-                        ntrees=rand_ntrees,
-                        max_depth=rand_max_depth,
-                        mtries=rand_mtries
-                        )
-  ...
-}
-```
-
-After 1000 models here are the results of the best models for test and for cross validation:
-
-|                     | Best Test Model | Best CV Model |
-|:-------------------:|:---------------:|:-------------:|
-| ntrees              | 36              | 44            |
-| max_Depth           | 30              | 8             |
-| mtries              | 3               | 7             |
-
-The models' accuracy distribution for test accuracy:
-
-| Accuracy of Model | Percentage of Models |
-|:-----------------:|:--------------------:|
-| 50                | 0.200000%            |
-| 68                | 0.100000%            |
-| 69                | 0.200000%            |
-| 70                | 0.900000%            |
-| 71                | 2.100000%            |
-| 72                | 2.500000%            |
-| 73                | 5.900000%            |
-| 74                | 6.400000%            |
-| 75                | 2.600000%            |
-| 76                | 4.700000%            |
-| 77                | 2.800000%            |
-| 78                | 5.000000%            |
-| 79                | 3.100000%            |
-| 80                | 4.700000%            |
-| 81                | 5.800000%            |
-| 82                | 4.800000%            |
-| 83                | 6.600000%            |
-| 84                | 6.400000%            |
-| 85                | 10.500000%           |
-| 86                | 6.000000%            |
-| 87                | 5.100000%            |
-| 88                | 6.200000%            |
-| 89                | 4.900000%            |
-| 90                | 2.200000%            |
-| 91                | 0.200000%            |
-| 93                | 0.100000%            |
-
-![Hyperparameter Optimization Test Accuracy]({{ site.baseurl }}/images/h2o_hpo_rftest.png)
-
-The models' accuracy distribution for cross validation accuracy:
-
-| Accuracy of Model | Percentage of Models |
-|:-----------------:|:--------------------:|
-| 71                | 0.100000%            |
-| 73                | 0.200000%            |
-| 74                | 0.100000%            |
-| 75                | 0.100000%            |
-| 76                | 0.200000%            |
-| 77                | 0.800000%            |
-| 78                | 0.700000%            |
-| 79                | 1.100000%            |
-| 80                | 1.400000%            |
-| 81                | 2.500000%            |
-| 82                | 6.700000%            |
-| 83                | 19.100000%           |
-| 84                | 37.400000%           |
-| 85                | 23.800000%           |
-| 86                | 5.800000%            |
-
-![Hyperparameter Optimization CV Accuracy]({{ site.baseurl }}/images/h2o_hpo_rfcv.png)
-
-We can again notice a more or less normal distribution. However, there are a few differences. The test values are more spread out, and usually the CV accuracy is higher. 
-
-
-| Model           | Training Accuracy | Test Accuracy | CV Accuracy |
-|:---------------:|:-----------------:|:-------------:|:-----------:|
-| H2O.RF          | 81.83%            | 86.59%        | 81.21%      |
-| H2O.RF(test)    | 81.23%            | 92.78%        | 79.22%      |
-| H2O.RF(cv)      | 83.89%            | 72.62%        | 85.63%      |
-
+# I. The Problem
+
+## Chapter 1 Introduction
+We learn by interacting with the environment and receiving its feedback. There is no teacher, just feedback. 
+Reinforcement learning is a computational approach to this type of learning.
+
+### 1.1 Reinforcement Learning
+Learn what to do in order to maximize a numerical reward signal.
+It is different from supervised learning since it does not learn from examples.
+One of the challenges is the trade-off of exploration and exploitation.
+It addresses the whole problem of interaction in an unknown environment, not just a subproblem.
+
+### 1.2 Examples
+Playing chess, you get feedback by winning or losing.
+Petroleum refinery operation, you monitor the output by changing the parameters.
+A calf learning to walk right after being born.
+A robot deciding to continue working or going back to the charge station.
+Preparing breakfast.
+In the examples the agent uses experience to better optimize future results.
+
+### 1.3 Elements of Reinforcement Learning
+Agent, environment, policy, reward function, value function, model (optional).
+- Policy: the agent's way of behaving at a given time
+- Reward function: the goal is to maximize this. The short term immediate gain of an action.
+- Value function: what is good in the long run, based on reward.
+- Model: mimics the environment, used for planning.
+
+### 1.4 An Extended Example: Tic-Tac-Toe
+Uses tic-tac-toe as a reinforcement learning example. Is has different states, and an outcome, while playing games, it updates the value estimate of each state based on the eventual result of winning or not.
+Different from genetic algorithms (evolutionary methods), they consider a policy then play many games, ignoring what happens during the game. Value function evaluates every state's possible actions.
+
+### 1.5 Summary
+Reinforcement learning is a computational approach for an agent in an unknown environment to learn to optimize a numerical goal by interacting with the environment and getting feedback from it.
+
+### 1.6 History of Reinforcement Learning
+Three threads:
+- Trial and error
+- Problem of optimal control and its solution using value functions and dynamic programming
+- Temporal difference methods
+Because of the trail-and-error concept it was confused with supervised learning before being properly separated by the authors. All three threads were considered different before this.
+
+### 1.7 Bibliographical Remarks
+Some reference material was presented here.
+
+## Chapter 2 Evaluative Feedback
+You evaluate the actions taken, instead of instructing the algorithm which action to take. This is the difference with supervised learning.
+
+### 2.1 An n-Armed Bandit Problem
+This is the one-armed bandit but with n arms. So you have n options, and every time you take one you evaluate is estimated value versus its real value.
+Talks about the conflict of exploration and exploitation:
+- Exploitation: take the option with the highest value estimate.
+- Exploration: take an option which is not the highest value estimate, maybe you will find it is actually better.
+
+### 2.2 Action-Value Methods
+Q*(a) - the true value of an action, which is the mean reward received when selected.
+Qt(a) - the estimated value at the t-th action
+Choose most of the time the greedy option (the action with the highest value)
+Choose a non optimal action with a small probability (epsilon).
+These methods are called epsilon-greedy.
+Three cases were compared;
+1 - greedy or epsilon = 0
+2 - epsilon = 0.1
+3 - epsilon = 0.01
+Option 1 from a good option really fast and stayed with it. 
+Option 2 took a little longer to find a good reward but over time was better. 
+Option 3 took even longer, but when found would exploit it more often than option 2.
+The epsilon parameter is the measure of exploration vs exploitation. You could change epsilon over time. It is important to consider when and if the values of actions changes over time, so as to always keep an effective epsilon for exploration and updates those values accordingly.
+
+### 2.3 Softmax Action Selection
+An epsilon-greedy chooses randomly between all non-optimal actions. Meaning it choose the worst action just as much as the second best. This is bad when the worst action is considerably worse. So a softmax action ranks the actions based on how good they are, and chooses the best ones more frequently than the worst ones when exploring.
+The most common softmax method uses a Gibbs, or Boltzmann, distribution.
+According to the book when it was written, there is no study that shows if a softmax selection is better or not than an epsilon-greedy selection.
+
+### 2.4 Evaluation Versus Instruction
+Evaluation learning - is just what previous examples have done, they make an action and evaluate how good it was. To know if it was correct or not it needs to evaluate all actions a lot of times. 
+Instruction learning - what supervised learning does, you need not search the actions, you are told which is the best action after you take on. There is no searching of actions. You might search the parameter space, but not the action space.
+Supervised learning doesn't control its environment because it follows (not influences) the information it receives. Instead of trying to make its environment behave in a certain way, it tries to make itself behave as instructed by its environment.
+
+For binay problems (two actions) if deterministic (not random), supervised learning works great. If stochastic (random), then not. Because if both are > 0.5, one 0.8 and the other 0.9, then it might get incorrectly stuck in the 0.8 one, believing the other to be 0.2, but its not because it is stochastic. 
+As a conclusion, this shows that we need something different than just supervised learning.
+
+### 2.5 Incremental Implementation
+Instead of storing all rewards for an action and re-calculate its value as an average, just do an incremental update. The general form is:
+NewEstimate = OldEstimate + StepSize[Target - OldEstimate]
+StepSize changes, it is 1/k, where k is the (k+1)st reward.
+
+### 2.6 Tracking a Nonstationary Problem
+The previous scenarios are for stationary problems, the bandit does not change over time. 
+For non-stationary problems, we need to give more weight to recent rewards than to previous ones. Thus, we use a constant step-size called alpha (0 < alpha <= 1).
+Sometimes alpha is not constant, but seldom used in real-life problems.
+
+### 2.7 Optimistic Initial Values
+We have needed to give initial value estimates a value, this is bias. When all options are tried at least once, bias disappears. However, with a constant alpha, it is always there, but slowly decreasing with time. In practice, it is not a problem.
+Could be used to encourage exploration, setting +5 as default but with mean reward of 0 and variance 1. This is called optimistic initial value. At the start it performs worse, and with time it performs better, since it explored more it found the best action faster. It is an effective trick on stationary problems. Not useful for non-stationary, since the encouraging of exploration is temporary.
+
+### 2.8 Reinforcement Comparison
+Reference reward: the reference to know if a received reward is good or bad. Could be the average of previous rewards. The mothods who use this are called reinforcement comparison methods, sometimes more effective than action-value methods, and precursors to actor-critic methods (presented later, they solve the full reinforcement learning problem).
+Reinforcement comparison methods do not maintain action-value estimates, only an overall reward level. Like softmax, it kind of ranks the actions every time it receives a new reward from an action.
+
+### 2.9 Pursuit Methods
+Pursuit methods maintain both action-value estimates and action preferences. 
+In the tests of the book, it performed better that all previous methods covered thus far. But it is not always the case, each method has its own uses and advantages.
+The example in the book is for stationary environments.
+
+### 2.10 Associative Search
+Non-associative tasks, no need to associate actions with situations.
+Example, multiple n-armed bandit problems, uniquely identified by color, so you have if red then 1, if blue then 2, etc. 
+These are called associative search tasks. They are intermmediate between n-armed bandit and full reinforcement learning problems:
+- Full problem: it learns a policy
+- n-armed problem: each action affects only the immediate reward
+It becomes a full reinforcement learning problem if actions are allowed to affect the next situation as well as the reward.
+
+### 2.11 Conclusions
+Methods to balance exploration and exploitation:
+- epsilon greedy
+- softmax
+- pursuit
+Interval estimation methods: for each action estimate a confidence interval of its value. At the moment, it is not feasible in practice.
+
+### 2.12 Bibliographical and Historical Remarks
+Reference material is presented here.
+
+## Chapter 3 The Reinforcement Learning Problem
+The problem the book tries to solve will be introduced, as well as its trade-offs and challenges.
+
+### 3.1 The Agent-Environment Interface
+Agent: the learner and decision-maker.
+Environment: the thing the agent interacts with.
+They interact continually. Environment is affected by actions and responds with a reward and a new state.
+Each state is mapped to probabilities to select an action, this is called the policy.
+Sensory mechanisms are considered part of the environment, not the agent. If it cannot be changed by the agent, it is part of the environment.
+The agent-environment boundary represents the limit of the agent's absolute control, not of its knowledge.
+
+### 3.2 Goals and Rewards
+The goal of the agent is to maximize the cumulative reward over time.
+The reward is to tell the agent what to acheive, not how. Reward in chess is for winning, not for capturing opponent pieces.
+
+### 3.3 Returns
+We want to maximize the expected return, which in the simplest case is the sum of the rewards fromt the first state to the terminal state. Tasks with a terminal state are called episodic tasks.
+If no terminal task, they are called continuing tasks.
+They use discounting, for expected return, called discounted return. Using gamma where 0<=gamma<=1 as the discount rate. It determines the present values of future rewards. The closer to 1 the more farsighted, the closer to 0 the more nearsighted.
+
+### 3.4 Unified Notation for Episodic and Continuing Tasks
+It just clarifies a notation that they will use in the rest of the book to reference both types of tasks (episodic and continuing).
+
+### 3.5 The Markov Property
+Markov property, a property of the states. State is whatever information is available to the agent.
+The state is not only the immediate sensation, For example, you can move your eyes to see a whole image, but only one part at a time, the state is the whole image. The state does not necessarily contain everything that is useful to know. Agent is not penalized for not knowing something, only for forgetting something.
+A Markov state is a state that has all relevant information about past states. Examples, checkers board state, most is lost but everything necessary for the future is still there. Also, velocity and position of a cannonball.
+The closest the state is to being Markov, the more useful it is, and the better performance will be acheived by the reinforcement learning systems. The book assumes all states to be Markov.
+Most of the times, we don't have a complete Markov state, but we try to have it as close as possible to Markov, and it usually works pretty good. So not having a Markov state is not a severe problem.
+
+### 3.6 Markov Decision Processes
+MDP, Markov Decision Process, a reinforcement learning task that satisfies the Markov property. If state and actions are finite it is a finit MDP.
+Given a state and action, each probability for next state.
+
+### 3.7 Value Functions
+Value functions are used to estimate the expected return of any action in a state. 
+Monte Carlo methods are when you keep averages for each action taken in a state.
+Various examples are given, including a rough version of GridWorld.
+
+### 3.8 Optimal Value Functions
+Optimal policy is the one which gives the most reward in the long run.
+You can use Bellman optimality equation to find the optimal policy. It is impractical as it performs an exhaustive search and assumes the following which rarely happen in the real world scenarios:
+- we accurately know the dynamics of the environment
+- we have enough computational resources to complete the computation of the solution
+- the Markov property
+
+### 3.9 Optimality and Approximation
+Finding the optimal policy is the best you can do, but almost never possible. Computational, memory and time constraints limit doing this, hence, we need to approximate.
+Reinforcement learning approximates by learning for states that happen the most, and learning less for those that almost do not happen. It is an ok trade-off and an important diffentiating characteristic in comparison to other approaches to approximate the solving of MDPs.
+
+### 3.10 Summary
+Agent, environment, actions, states, rewards, policy, return, discount, episodic/continuing tasks, Markov, value function, optimal value function, optimal policy, Bellman optimality equations
+
+### 3.11 Bibliographical and Historical Remarks
+Reference material is given.
+
+# II. Elementary Solution Methods
+Three methods to solve the full problem will be covered:
+- Dynamic Programming: well developed but need a complete accurate model
+- Monte Carlo methods: no model need and simple, but do not work for step-by-step incremental computation
+- Temporal-difference learning: no model and fully incremental, but complex to analyze
+Also different in efficiency and speed of convergence. In part III, they are combined to get the best of each.
+
+## Chapter 4 Dynamic Programming
+DP is a collection of algorithms used to compute optimal policies given a perfect model as an MDP. They are unfeasible because the assume a perfect model and requires too much computations. Important theoretical because the other methods try to achieve what DP does but without a perfect model and with less computation.
+
+### 4.1 Policy Evaluation
+Policy evaluation is how to compute the state-value function for a given policy.
+Talks about iterative policy evaluation. Then gives examples, and uses grid world at the end. 
+
+### 4.2 Policy Improvement
+We compute the value function of a policy to find better policies. We take a different actions and then follow the found policy, and compare to see if it was better. If it is better, it is called policy improvement theorem.
+Policy improvement, find a better policy from an existing policy.
+
+### 4.3 Policy Iteration
+Policy Iteration: Continue iterating with policy improvement until you find the optimal. Since it is a finite MDP, it should eventually converge. It often needs few iterations to converge.
+
+### 4.4 Value Iteration
+You do not need to reach the limit of policy evaluation, it can be stopped after the optimal policy is found.
+Value iteration: policy evaluation is stopped after just one sweep (one backup of each state). It stops when it only improves by a small amount (arbitrarily set). It could be seen as an iteration of one sweep for policy evaluation and one sweep for policy improvement.
+
+### 4.5 Asynchronous Dynamic Programming
+DP needs to sweep all states. Asynchronous DP does so not in order, but with whatever state is available. Also works while working in real-time, it allows to focus on the states more relevant to the agent.
+
+### 4.6 Generalized Policy Iteration
+GPI is used to describe the interaction between policy evaluation and policy improvement. It does not need to be sequential.
+Both together acheive optimality, both are opposing but collaborative.
+
+### 4.7 Efficiency of Dynamic Programming
+They are impractical for very large problems, but much better than linear programming or direct search (factor of about 100).
+They typically converge way faster than their worst case scenario, in real life problem they are quite feasible.
+
+### 4.8 Summary
+Policy evaluation and policy improvement, together you get policy iteration and value iteration.
+Bootstraping - update an estimate based on other estimates.
+Monte Carlo - no model and no bootstrap
+Temporal-difference - no model but does bootstrap
+
+### 4.9 Bibliographical and Historical Remarks
+Reference material here.
+
+## Chapter 5 Monte Carlo Methods
+First learning methods for estimating value functions and discovering optimal policies. We do not assume a complete model. Monte Carlo require experience samples, from on-line or simulated interactions. 
+Value estimates and policies only change when an episode finishes.
+
+### 5.1 Monte Carlo Policy Evaluation
+Each ocurrence of a state is called a visit. First-visit MC methos averages return after the first visit. Every-visit is the other one.
+The estimate of each state is independent of estimates of other states. So, no bootstrap. A third advantage is that is can learn each state independently, so it can learn only the states it is experiencing.
+
+### 5.2 Monte Carlo Estimation of Action Values
+With no model, estimate action values instead of state values, which is Q*. For this, continual exploration must be assured.
+
+### 5.3 Monte Carlo Control
+Explorinf starts is possible when you have simulated experience, you can choose a random equal probability start at all possible starts. Not necessarily possible with on-line experience.
+Talks about Monte Carlo ES (Explorin Starts). No need for infinite episodes, but do policy evaluation and improvement after each episode for each action-state pait visited in each episode.
+
+### 5.4 On-Policy Monte Carlo Control
+There are on-policy methods and off-policy methods.
+On-policy methods attempt to evaluate or improve the policy that is used to make decisions.
+
+### 5.5 Evaluating One Policy While Following Another
+We have experience off the policy, but we can still learn the value function for the policy from said experience. This is possible is all action in my policy is taken at least occasionally in the other policy.
+
+### 5.6 Off-Policy Monte Carlo Control
+On-policy, estimate the value of a policy while using it for control. In off-policy the two functions are separated.
+- Behavior policy: to generate behavior
+- Estimation policy: to evaluate and improve the value function
+Advantage, estimation can be greedy, while keeping the behavior random.
+
+### 5.7 Incremental Implementation
+Gives a way to do the calculations incremental, to optimize computer resources.
+
+### 5.8 Summary
+Learn from experience, sample episodes.
+Advantages over DP:
+- learn from interaction with the environment
+- can use simulation or sample models
+- easy to focus on subset of states
+- less harmed by having non Markov states, because they do not bootstrap
+You need to maintain enough exploration.
+
+### 5.9 Bibliographical and Historical Remarks
+Reference material cited.
+
+## Chapter 6 Temporal-Difference Learning
+TD, central and novel idea. Combination of Monte Carlo and DP. No model needed just experience, but do bootstrap. 
+In chapter 7, TD(gamma) combines TD and Monte Carlo.
+
+### 6.1 TD Prediction
+MC need to wait the end of the episode to update a value estimate, TD only needs to wait for the next time step.
+
+### 6.2 Advantages of TD Prediction Methods
+No model needed. Learn per step, not per episode. MC discards experimental actions.
+In practice, but not mathematically proven, TD is faster than MC.
+
+### 6.3 Optimality of TD(0)
+Batch updating, update values after each batch of episodes or time steps (when limited you repeat them).
+You have one example of state A reward 0 and move to B reward 0. Other options where B's reward is 3/4.
+TD gives A's reward as 3/4, but MC gives reward 0.
+TD is better because it generalizes to new data.
+
+### 6.4 Sarsa: On-Policy TD Control
+We calculate the action-value function. Move from state-action pair to state-action pair.
+SARSA = State, action, reward, state, action
+
+### 6.5 Q-Learning: Off-Policy TD Control
+An important breakthrough. Q is estimated independent of which policy is followed. Only thing required is for all pairs to continue to be updated.
+
+### 6.6 Actor-Critic Methods
+Separate memory structue to represent the independence of policy and value function. 
+Policy is the actor. Estimated value function is the critic. Learning is on-policy.
+
+### 6.7 R-Learning for Undiscounted Continuing Tasks
+It is off-policy, for no discounts and not episodic. Seeks the maximum reward per time step.
+
+### 6.8 Games, Afterstates, and Other Special Cases
+Afterstates, what comes after you make a move in a game. Afterstate value functions, the value functions of afterstates.
+Two positions can result in the same one. Normally, they would be considered two states, but with afterstates it is considered the same, thus, faster learning.
+
+### 6.9 Summary
+Online, little computation.
+Methods presented are one-step, tabular, modelfree TD methods.
+Next chapter are extended to:
+- Multistep forms.
+- Function approximation instead of tables (neural networks)
+- Also with a model.
+TD methods are not reinforcement learning specific, they can also be used to learn long-term predictions about dynamical systems.
+
+### 6.10 Bibliographical and Historical Remarks
+Reference material is given.
+
+# III. A Unified View
+Three methods: DP, MC, TD. They are not exclusive.
+Unify: MC and TD, function approximation, models again.
+
+## Chapter 7 Eligibility Traces
+Forward view or theoretical view: They bridge MC and TD. Understand what is computed.
+Backward view or mechanistic view: An eligibility trace is a temporary record of the occurrence of an event, visit state or take action. Credit or blame are only assigned to relevant states and actions. Get intuition about the algorithm.
+
+### 7.1 n-Step TD Prediction
+TD does a one-step backup, MC steps until the end. n-step are intermmediate, more than one but not all.
+Rarely used n practice, because too complicated to implement. Only theoretical purposes.
+
+### 7.2 The Forward View of TD(gamma)
+Not only n-step, also an average of n-step returns. Example, half 2 step average + half 4 step average. Called complex backup.
+
+### 7.3 The Backward View of TD(gamma)
+Useful because it is simple conceptually and computationally. Eligibility trace, additional memory variable for each state. It remembers which states and action are eligible to learn when a reinforcement event occurs.
+Feasible to implement, unlike forward view.
+
+### 7.4 Equivalence of Forward and Backward Views
+It proves that off-line TG(gamma) achieves the same weight updates as the offline gamma-return algorithm.
+
+### 7.5 Sarsa(gamma)
+Use eligibility traces for control. Apply TD(gamma) to state-action pairs instead of states.
+
+### 7.6 Q(gamma)
+Combine eligibility traces and Q-learning:
+- Watkin's Q(gamma)
+- Peng's Q(gamma)
+Watkins's Q($\lambda $) does not look ahead all the way to the end of the episode in its backup. It only looks ahead as far as the next exploratory action
+Peng's Q($\lambda $) can be thought of as a hybrid of Sarsa($\lambda $) and Watkins's Q($\lambda $).
+
+### 7.7 Eligibility Traces for Actor-Critic Methods
+Shows how to add eligibility traces to actor-critic methods
+
+### 7.8 Replacing Traces
+A replacing trace, when a visit is repeated, the max is 1, does not go beyond.
+
+### 7.9 Implementation Issues
+Only recent visits need to be updated, as they are the only ones greater than 0.
+
+### 7.10 Variable Lambda
+The idea of changing lambda from step to step.
+
+### 7.11 Conclusions
+Eligibility traces with TD errors are an incremental way of shifting between MC and TD.
+Eligibility traces are used for delayed rewards and non-Markov states.
+They require more computation than one-step methods, but faster learning, especially when rewards are delayed by many steps. 
+
+### 7.12 Bibliographical and Historical Remarks
+Reference material presented here.
+
+## Chapter 8 Generalization and Function Approximation
+Generalization problem, learn from previous similar (not exact) states.
+Function approximation, it is supervised learning.
+
+### 8.1 Value Prediction with Function Approximation
+Values function is not a table, but a function, like a neural network weight matrix.
+Any supervised learning method that can learn with online data works.
+
+### 8.2 Gradient-Descent Methods
+Particularly well suited for reinforcement learning.
+2 methods have been used:
+- Multilayer ANNs with backprop
+- Linear form
+
+### 8.3 Linear Methods
+V is a linear function of theta.
+
+#### 8.3.1 Coarse Coding
+Inside a circle or not, example of binary feature. Circles overlap, so by knowing on which circles a state is present, you can coarsely know its location. Like an estimate, called coarse coding.
+
+#### 8.3.2 Tile Coding
+Form of coarse coding, for on-line learning.
+
+#### 8.3.3 Radial Basis Functions
+Natural generalization of coarse coding. Not only values 0 and 1, but anything between them, real numbers. 
+RBF network - linear function approximator.
+More complex and more manual tuning is needed.
+
+#### 8.3.4 Kanerva Coding
+With hundreds of dimensions, RBF and tile coding are impractical.
+Separate complexity of states from the complexity of approximations. One method is Kanerva coding.
+
+### 8.4 Control with Function Approximation
+Now action-state prediction, combine policy improvement and action selection.
+It shows a mountain-car task problem which is somewhat interesting in that it has to purposely get worse before it can get better to reach the final goal.
+
+### 8.5 Off-Policy Bootstrapping
+Interaction between bootstrapping, function approximation and on-policy distribution.
+Bootstrapping methods are harder to combine with function approximation than non-bootstrapping. The combination is unstable.
+
+### 8.6 Should We Bootstrap?
+Non-bootstraping seem to be more convenient theoretically, but bootstraping methods are the methods of choice in practice.
+Empirically, bootstraping methods perform better, not yet known why (when book was written).
+
+### 8.7 Summary
+Reinforcement learning methods need generalization, supervised-learning methods help in this.
+
+### 8.8 Bibliographical and Historical Remarks
+Reference material.
+
+## Chapter 9 Planning and Learning
+Unify methods that require a model and those that don't.
+- Planning methods: need a model
+- Learning methods: do not need a model
+
+### 9.1 Models and Planning
+With a model you can simulate the environment. Planning, input is a model, output is a policy (improved preferrably).
+state-space planning, search the possible states
+plan-space planning, search the possible plans
+
+### 9.2 Integrating Planning, Acting, and Learning
+Model-learning: improve the model, make it match closer to reality
+Direct reinforcement learning: improve value function and policy
+value/policy -acting-> experience -model learning-> model -planning-> value/policy
+value/policy -acting-> experience -direct RL-> value/policy
+The complete loop is also called indirect RL.
+Indirect need less experience. Direct are simpler.
+Planning seems to make learning faster (in number of episodes required). They use Dyna-Q agents.
+In a maze example, no planning 25 episodes, 5 plan steps 5 episodes, 50 plan steps 3 episodes.
+Real experience for learning, simulated experience for planning. Both actions (learning and planning) happen simultaneously.
+
+### 9.3 When the Model is Wrong
+When wrong, planning will compute a sub-optimal policy.
+When the optimal path at the start is long, and after learning it a new short path opens, planning makes it so that it never finds the new path. Only Dyna-Q+ found it.
+Dyna-Q+ keeps track of how long ago did it try a state, and explores the oldest.
+reward+k(square_root(n)), where n is time steps since last try, for a small k. 
+It permits to try the mentioned steps, at the same time as planning to try them, if they have a long sequence. Normal epsilon-greedy will most likely never reach a state randomly if a very long sequence is required.
+
+### 9.4 Prioritized Sweeping
+Planning has been done with random searches. On larger problems, it is inefficient.
+Move backwards from goal states(any state whose value has changed), prioritized by size of change.
+
+### 9.5 Full vs. Sample Backups
+Full is better but much more expensive computationally, which is the limiting resource.
+Sample are better where large stochastic problems with too many states, because they compound their learning little by little.
+
+### 9.6 Trajectory Sampling
+Two ways of distributing backups, classical from DP (sweeps of entire state space), backup up once per sweep, not good for large tasks, one sweep may be too much. 
+Sample from state space with some distribution. Trajectory samplig, generate experience and backups to create said distribution. For small problems, better at the start, worse later on. This is because it keeps exploring already optimal states. Results not conclusive.
+
+### 9.7 Heuristic Search
+They are the predominant planning methods. Planning in the policy part. Many possible actions are evaluated, backup up, and choses the best one, discarding the others. Deeper the search, better actions but more computation and time. 
+
+### 9.8 Summary
+Learning and planning, let them update the same estimated value function.
+Any learning methods becomes a planning methods by applying it to a simulated experience.
+Sometimes deep backups can be implemented as sequences of shallow backups.
+
+### 9.9 Bibliographical and Historical Remarks
+Reference material.
+
+## Chapter 10 Dimensions of Reinforcement Learning
+Not a collection of individual methods, a cohorent set of ideas (dimensions).
+
+### 10.1 The Unified View
+All methods have 3 key ideas;
+- estimate value function is their goal
+- backup values
+- GPI, keep an approximate value function and policy, and one improves the other
+
+2 dimensions:
+- sample or full backups
+- shallow or deep backups
+
+- DP: full and shallow
+- TD: sample and shallow
+- MC: sample and deep
+- Exhaustive search: full and deep
+
+another dimension is function approximation. another is needing or not a model. another is on or off policy.
+
+More dimensions:
+- definition of return: episodic or continuing, discounted or undiscounted
+- action values vs state values vs afterstate values
+- action selection / exploration
+- synchronous vs asynchronous: backups of states simultaneous or not
+- replacing vs accumulating traces
+- real vs simulated
+- location of backups
+- timing of backups: as part of selections actions or later
+- memory of backups: how long to keep them
+
+### 10.2 Other Frontier Dimensions
+Mentioned current work to be done for the advancement of reinforcement learning.
+
+## Chapter 11 Case Studies
+Show some case studies where reinforcement learning has been applied.
+
+### 11.1 TD-Gammon
+Made to play backgammon. Used a multilayer neural network in 1992. Learned to play at the same level of the best players in the world. 
+
+### 11.2 Samuel's Checkers Player
+1959. Heuristic search methods and TD.
+It sometimes got worse with experience, it was missing evaluation functions. It acheived better than average play. 
+
+### 11.3 The Acrobot
+A bot swinging on a high bar, like a gymnast.
+Sarsa(lambda) was the algorithm used.
+
+### 11.4 Elevator Dispatching
+Press the elevator button and wait for it. Wait time depends on dispatching strategy.
+4 elevators, 10 floors, was analyzed. 10^22 states. If 1 per microsecond, we need 1000 years per sweep.
+Waiting time: time to get on
+System time: time to get off
+objective is focused on squared waiting time.
+one-step q-learning
+
+### 11.5 Dynamic Channel Allocation
+How to use bandwidth in cellular phone system, to provide good service to as many customer as possible. The RL performed a little better, goal was to reduces amount of blocked calls.
+
+### 11.6 Job-Shop Scheduling
+Tasks and resources. A resources can only do one task at once. Tasks have dependencies within each other. Goal is to minimize time to execute all tasks. 
+Experience replay technique developed by Lin(1992). At any point in learning it always remembered the best episode up to that point, after every four episodes it replayed this remembered episode, learning again from it.
+First application in plan-space. To search for the best plan.
+
+## Bibliography
+References used in the book.
