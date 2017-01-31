@@ -3,7 +3,7 @@ layout: post
 title: Book Summary Reinforcement Learning An Introduction
 ---
 
-My summary of the book "Reinforcement Learning - An Introduction by Richard S. Sutton and Andrew G. Barto" found [here](http://webdocs.cs.ualberta.ca/~sutton/book/ebook/the-book.html).
+My summary of the book "Reinforcement Learning - An Introduction by Richard S. Sutton and Andrew G. Barto" found [here](http://webdocs.cs.ualberta.ca/~sutton/book/ebook/the-book.html). 
 
 I write this as my notes as I go through the book from cover to cover. The purpose is to have them as personal reference notes, not to re-explain what is already in the book. However, they might be useful for someone else.
 
